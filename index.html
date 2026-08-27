@@ -1,428 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ForgeGrit — No Bullshit Models</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-            color: #e0e0e0;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .logo {
-            font-size: 48px;
-            font-weight: 900;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .tagline {
-            font-size: 14px;
-            color: #888;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .form-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #aaa;
-        }
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            background: #0f0f0f;
-            color: #e0e0e0;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        input:focus {
-            outline: none;
-            border-color: #ff6b35;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-            background: #151515;
-        }
-        .buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 28px;
-        }
-        button {
-            flex: 1;
-            padding: 14px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255, 107, 53, 0.4);
-        }
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        .btn-secondary {
-            background: #0f0f0f;
-            color: #e0e0e0;
-            border: 1px solid #444;
-        }
-        .btn-secondary:hover {
-            border-color: #ff6b35;
-            background: #151515;
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .message {
-            margin-top: 20px;
-            padding: 14px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .message.error {
-            background: rgba(255, 67, 67, 0.1);
-            color: #ff6b6b;
-            border: 1px solid rgba(255, 107, 107, 0.3);
-        }
-        .message.success {
-            background: rgba(76, 175, 80, 0.1);
-            color: #4caf50;
-            border: 1px solid rgba(76, 175, 80, 0.3);
-        }
-        .message.info {
-            background: rgba(33, 150, 243, 0.1);
-            color: #2196f3;
-            border: 1px solid rgba(33, 150, 243, 0.3);
-        }
-        .api-key-display {
-            background: #0f0f0f;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 28px;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-        .api-key-display h3 {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #666;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-        }
-        .api-key-value {
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 11px;
-            word-break: break-all;
-            background: #151515;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #333;
-            line-height: 1.4;
-            max-height: 80px;
-            overflow-y: auto;
-        }
-        .copy-btn {
-            margin-top: 12px;
-            width: 100%;
-            padding: 10px;
-            font-size: 11px;
-            background: #333;
-            color: #e0e0e0;
-            border: 1px solid #444;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .copy-btn:hover {
-            background: #444;
-            border-color: #555;
-        }
-        .toggle-auth {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #888;
-        }
-        .toggle-auth button {
-            background: none;
-            border: none;
-            color: #ff6b35;
-            cursor: pointer;
-            text-decoration: underline;
-            padding: 0;
-            width: auto;
-            font-size: 12px;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-        .toggle-auth button:hover {
-            color: #f7931e;
-        }
-        .info-box {
-            background: rgba(33, 150, 243, 0.05);
-            border-left: 3px solid #2196f3;
-            padding: 12px 14px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-top: 12px;
-            line-height: 1.5;
-        }
-        .info-box code {
-            background: #0f0f0f;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
-            color: #ff6b35;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForgeGrit — Frontier models. No cost. No bullshit.</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0c0d; --panel:#151517; --panel2:#1c1c1f;
+  --line:#2a2a2e; --text:#e8e8ea; --dim:#8a8a92;
+  --orange:#ff6b35; --amber:#f7931e; --green:#4ade80; --red:#f87171;
+  --mono:'SF Mono',Menlo,Consolas,'Courier New',monospace;
+}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:820px;margin:0 auto;padding:0 20px}
+
+header{padding:64px 0 40px;text-align:center;border-bottom:1px solid var(--line)}
+.mark{font-size:56px;line-height:1;margin-bottom:8px}
+h1{
+  font-size:38px;font-weight:900;letter-spacing:-1px;
+  background:linear-gradient(135deg,var(--orange),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.sub{color:var(--dim);font-size:15px;margin-top:10px}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.badge{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  padding:6px 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--dim)
+}
+.badge.on{color:var(--green);border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.07)}
+
+section{padding:44px 0;border-bottom:1px solid var(--line)}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:1.4px;color:var(--dim);margin-bottom:20px;font-weight:700}
+h3{font-size:16px;margin:26px 0 10px;font-weight:700}
+p{color:var(--dim);font-size:14px;margin-bottom:12px}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px}
+.field{margin-bottom:16px}
+label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);margin-bottom:7px}
+input{
+  width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:8px;
+  background:var(--bg);color:var(--text);font-size:14px;transition:.2s
+}
+input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,107,53,.12)}
+.row{display:flex;gap:10px;margin-top:22px}
+button{
+  flex:1;padding:13px;border:none;border-radius:8px;font-size:12px;font-weight:700;
+  cursor:pointer;text-transform:uppercase;letter-spacing:.8px;transition:.2s;font-family:inherit
+}
+.primary{background:linear-gradient(135deg,var(--orange),var(--amber));color:#fff}
+.primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,107,53,.3)}
+.ghost{background:var(--bg);color:var(--text);border:1px solid var(--line)}
+.ghost:hover{border-color:var(--orange)}
+button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.msg{margin-top:16px;padding:12px 14px;border-radius:8px;font-size:13px;display:none}
+.msg.err{background:rgba(248,113,113,.08);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.msg.ok{background:rgba(74,222,128,.08);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.keybox{display:none;margin-top:22px;padding:18px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.keybox h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin-bottom:10px}
+.keyval{font-family:var(--mono);font-size:12px;word-break:break-all;background:var(--panel2);padding:12px;border-radius:6px;border:1px solid var(--line);color:var(--orange)}
+
+pre{
+  background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;
+  line-height:1.65;position:relative;margin:12px 0
+}
+code{font-family:var(--mono)}
+p code,td code,li code{background:var(--panel2);padding:2px 6px;border-radius:4px;font-size:12.5px;color:var(--orange)}
+.cp{
+  position:absolute;top:8px;right:8px;background:var(--panel);border:1px solid var(--line);
+  color:var(--dim);font-size:10px;padding:5px 9px;border-radius:5px;cursor:pointer;
+  text-transform:uppercase;letter-spacing:.5px;font-weight:700;flex:none;transition:.2s
+}
+.cp:hover{color:var(--orange);border-color:var(--orange)}
+.c-key{color:#7dd3fc}.c-str{color:#a3e635}.c-fn{color:var(--amber)}
+
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+th{
+  text-align:left;padding:10px;font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--dim);border-bottom:1px solid var(--line)
+}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.meth{
+  font-family:var(--mono);font-size:10.5px;font-weight:700;padding:3px 7px;
+  border-radius:4px;display:inline-block
+}
+.get{background:rgba(74,222,128,.12);color:var(--green)}
+.post{background:rgba(255,107,53,.12);color:var(--orange)}
+
+.note{
+  background:rgba(255,107,53,.05);border-left:3px solid var(--orange);
+  padding:12px 14px;border-radius:0 6px 6px 0;font-size:13px;margin:16px 0;color:var(--dim)
+}
+.note b{color:var(--text)}
+.tabs{display:flex;gap:6px;margin:16px 0 0;flex-wrap:wrap}
+.tab{
+  padding:7px 14px;font-size:12px;font-weight:600;border-radius:7px;cursor:pointer;
+  background:var(--panel);border:1px solid var(--line);color:var(--dim);transition:.2s;flex:none
+}
+.tab.on{background:var(--panel2);color:var(--orange);border-color:var(--orange)}
+.pane{display:none}.pane.on{display:block}
+footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
+@media(max-width:600px){
+  h1{font-size:30px} .mark{font-size:44px} header{padding:44px 0 32px}
+  pre{font-size:11.5px} table{font-size:12px} td,th{padding:9px 6px}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">⚡</div>
-            <div class="tagline">ForgeGrit</div>
-        </div>
 
-        <div class="form-card">
-            <div id="auth-form">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-                </div>
-                <div class="buttons">
-                    <button class="btn-primary" id="login-btn">Login</button>
-                    <button class="btn-secondary" id="register-btn">Register</button>
-                </div>
-                <div class="toggle-auth">
-                    <button id="toggle-mode"></button>
-                </div>
-                <div class="message" id="message"></div>
-            </div>
-
-            <div class="api-key-display" id="api-key-display">
-                <h3>✅ Your API Key</h3>
-                <div class="api-key-value" id="api-key-value"></div>
-                <button class="copy-btn" id="copy-btn">📋 Copy to Clipboard</button>
-                <div class="info-box">
-                    Keep this secret! Use it in API requests:<br>
-                    <code>Authorization: Bearer &lt;key&gt;</code>
-                </div>
-                <div class="message success" style="display: block; margin-top: 12px;">
-                    ✨ You have 100,000 requests per day
-                </div>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 40px; font-size: 12px; color: #555;">
-            <p>No bullshit models • Zero cost • Full capability</p>
-        </div>
+<header>
+  <div class="wrap">
+    <div class="mark">&#9889;</div>
+    <h1>ForgeGrit</h1>
+    <div class="sub">Frontier models. Zero cost. No bullshit.</div>
+    <div class="badges">
+      <span class="badge on">100,000 req/day</span>
+      <span class="badge">8 flagship models</span>
+      <span class="badge">OpenAI-compatible</span>
+      <span class="badge">No credit card</span>
     </div>
+  </div>
+</header>
 
-    <script>
-        // Change this to your actual ForgeGrit API URL
-        const API_URL = "https://api-forgegrit.serveousercontent.com";
-        let isLoginMode = true;
+<div class="wrap">
 
-        const emailInput = document.getElementById("email");
-        const passwordInput = document.getElementById("password");
-        const loginBtn = document.getElementById("login-btn");
-        const registerBtn = document.getElementById("register-btn");
-        const messageEl = document.getElementById("message");
-        const apiKeyDisplay = document.getElementById("api-key-display");
-        const apiKeyValue = document.getElementById("api-key-value");
-        const copyBtn = document.getElementById("copy-btn");
-        const toggleBtn = document.getElementById("toggle-mode");
+<section>
+  <h2>What this is</h2>
+  <p>ForgeGrit serves only full-capability frontier models. No 1B toys, no distilled "lite" tiers, no trial credits that expire into a bill. You register, you get a key, you get 100,000 requests a day. That's the whole product.</p>
+  <p>The API speaks the OpenAI format, so anything already pointed at <code>/v1/chat/completions</code> works by changing two lines.</p>
+</section>
 
-        function showMessage(text, type = "info") {
-            messageEl.textContent = text;
-            messageEl.className = `message ${type}`;
-            messageEl.style.display = "block";
-        }
+<section>
+  <h2>Get a key</h2>
+  <div class="card">
+    <div id="form">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password">
+      </div>
+      <div class="row">
+        <button class="primary" id="login">Log in</button>
+        <button class="ghost" id="register">Register</button>
+      </div>
+      <div class="msg" id="msg"></div>
+    </div>
+    <div class="keybox" id="keybox">
+      <h4>Your API key</h4>
+      <div class="keyval" id="keyval"></div>
+      <div class="row"><button class="ghost" id="copykey">Copy key</button></div>
+      <div class="note" style="margin-bottom:0"><b>Store it now.</b> Send it as <code>Authorization: Bearer &lt;key&gt;</code> on every request.</div>
+    </div>
+  </div>
+</section>
 
-        function clearMessage() {
-            messageEl.style.display = "none";
-        }
+<section>
+  <h2>Quickstart</h2>
+  <p>Base URL:</p>
+  <pre><button class="cp">copy</button><code>https://api-forgegrit.serveousercontent.com</code></pre>
 
-        async function handleLogin() {
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
+  <div class="tabs">
+    <div class="tab on" data-p="curl">curl</div>
+    <div class="tab" data-p="py">Python</div>
+    <div class="tab" data-p="sdk">OpenAI SDK</div>
+    <div class="tab" data-p="js">JavaScript</div>
+  </div>
 
-            if (!email || !password) {
-                showMessage("Email and password required", "error");
-                return;
-            }
+  <div class="pane on" id="p-curl">
+<pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/v1/chat/completions \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span> \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{
+    "model": "claude-opus-5",
+    "messages": [{"role": "user", "content": "Say hello"}]
+  }'</span></code></pre>
+  </div>
 
-            try {
-                loginBtn.disabled = true;
-                const response = await fetch(`${API_URL}/authenticate/email`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
-                });
+  <div class="pane" id="p-py">
+<pre><button class="cp">copy</button><code><span class="c-key">import</span> requests
 
-                const data = await response.json();
+r = requests.<span class="c-fn">post</span>(
+    <span class="c-str">"https://api-forgegrit.serveousercontent.com/v1/chat/completions"</span>,
+    headers={<span class="c-str">"Authorization"</span>: <span class="c-str">"Bearer YOUR_KEY"</span>},
+    json={
+        <span class="c-str">"model"</span>: <span class="c-str">"claude-opus-5"</span>,
+        <span class="c-str">"messages"</span>: [{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: <span class="c-str">"Say hello"</span>}],
+    },
+    timeout=300,
+)
+<span class="c-fn">print</span>(r.<span class="c-fn">json</span>()[<span class="c-str">"choices"</span>][0][<span class="c-str">"message"</span>][<span class="c-str">"content"</span>])</code></pre>
+  </div>
 
-                if (!response.ok) {
-                    showMessage(data.error || "Login failed", "error");
-                    return;
-                }
+  <div class="pane" id="p-sdk">
+<pre><button class="cp">copy</button><code><span class="c-key">from</span> openai <span class="c-key">import</span> OpenAI
 
-                apiKeyValue.textContent = data.api_key;
-                apiKeyDisplay.style.display = "block";
-                document.getElementById("auth-form").style.display = "none";
-            } catch (err) {
-                showMessage(`Network error: ${err.message}`, "error");
-            } finally {
-                loginBtn.disabled = false;
-            }
-        }
+client = <span class="c-fn">OpenAI</span>(
+    base_url=<span class="c-str">"https://api-forgegrit.serveousercontent.com/v1"</span>,
+    api_key=<span class="c-str">"YOUR_KEY"</span>,
+)
 
-        async function handleRegister() {
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
+r = client.chat.completions.<span class="c-fn">create</span>(
+    model=<span class="c-str">"claude-opus-5"</span>,
+    messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: <span class="c-str">"Say hello"</span>}],
+)
+<span class="c-fn">print</span>(r.choices[0].message.content)</code></pre>
+  </div>
 
-            if (!email || !password) {
-                showMessage("Email and password required", "error");
-                return;
-            }
+  <div class="pane" id="p-js">
+<pre><button class="cp">copy</button><code><span class="c-key">const</span> res = <span class="c-key">await</span> <span class="c-fn">fetch</span>(
+  <span class="c-str">"https://api-forgegrit.serveousercontent.com/v1/chat/completions"</span>, {
+  method: <span class="c-str">"POST"</span>,
+  headers: {
+    <span class="c-str">"Authorization"</span>: <span class="c-str">"Bearer YOUR_KEY"</span>,
+    <span class="c-str">"Content-Type"</span>: <span class="c-str">"application/json"</span>
+  },
+  body: <span class="c-fn">JSON</span>.stringify({
+    model: <span class="c-str">"claude-opus-5"</span>,
+    messages: [{ role: <span class="c-str">"user"</span>, content: <span class="c-str">"Say hello"</span> }]
+  })
+});
+<span class="c-key">const</span> data = <span class="c-key">await</span> res.<span class="c-fn">json</span>();
+console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></pre>
+  </div>
+</section>
 
-            if (password.length < 6) {
-                showMessage("Password must be at least 6 characters", "error");
-                return;
-            }
+<section>
+  <h2>Models</h2>
+  <p>Pass any of these as <code>model</code>. All full-size &mdash; nothing here is a distilled variant.</p>
+  <table>
+    <thead><tr><th>Model ID</th><th>Family</th></tr></thead>
+    <tbody>
+      <tr><td><code>claude-opus-5</code></td><td>Claude Opus 5</td></tr>
+      <tr><td><code>claude-sonnet-5</code></td><td>Claude Sonnet 5</td></tr>
+      <tr><td><code>claude-opus-4-8</code></td><td>Claude Opus 4.8</td></tr>
+      <tr><td><code>claude-fable-5</code></td><td>Claude Fable 5</td></tr>
+      <tr><td><code>gpt-5.6-sol</code></td><td>GPT 5.6 Sol</td></tr>
+      <tr><td><code>moonshotai-kimi-k3</code></td><td>Kimi K3</td></tr>
+      <tr><td><code>gemini-3.1-pro</code></td><td>Gemini 3.1 Pro</td></tr>
+      <tr><td><code>gemini-3.7-flash</code></td><td>Gemini 3.7 Flash</td></tr>
+    </tbody>
+  </table>
+  <p>Live list, filtered to what your key can reach:</p>
+<pre><button class="cp">copy</button><code>curl https://api-forgegrit.serveousercontent.com/v1/models \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span></code></pre>
+</section>
 
-            try {
-                registerBtn.disabled = true;
-                const response = await fetch(`${API_URL}/register`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
-                });
+<section>
+  <h2>Endpoints</h2>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><span class="meth post">POST</span></td><td><code>/register</code></td><td>Create an account</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/email</code></td><td>Exchange credentials for a key</td></tr>
+      <tr><td><span class="meth get">GET</span></td><td><code>/v1/models</code></td><td>List available models</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/v1/chat/completions</code></td><td>Chat completion (OpenAI format)</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/v1/messages</code></td><td>Chat completion (Anthropic format)</td></tr>
+      <tr><td><span class="meth get">GET</span></td><td><code>/health</code></td><td>Service status &mdash; no key needed</td></tr>
+    </tbody>
+  </table>
 
-                const data = await response.json();
+  <h3>Register</h3>
+<pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/register \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{"email":"you@example.com","password":"your-password"}'</span></code></pre>
 
-                if (!response.ok) {
-                    showMessage(data.error || "Registration failed", "error");
-                    return;
-                }
+  <h3>Get your key</h3>
+<pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/authenticate/email \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{"email":"you@example.com","password":"your-password"}'</span></code></pre>
+  <p>Returns <code>api_key</code>, <code>owner_id</code>, and <code>rpd_limit</code>. The same account always gets the same key back.</p>
 
-                showMessage("✅ Account created! Log in with your credentials.", "success");
-                isLoginMode = true;
-                updateUI();
-                passwordInput.value = "";
-            } catch (err) {
-                showMessage(`Network error: ${err.message}`, "error");
-            } finally {
-                registerBtn.disabled = false;
-            }
-        }
+  <h3>Streaming</h3>
+  <p>Add <code>"stream": true</code> for server-sent events. Chunks arrive as <code>data:</code> lines, terminated by <code>data: [DONE]</code>.</p>
+<pre><button class="cp">copy</button><code>curl -N -X POST https://api-forgegrit.serveousercontent.com/v1/chat/completions \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span> \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{
+    "model": "claude-sonnet-5",
+    "messages": [{"role": "user", "content": "Count to five"}],
+    "stream": true
+  }'</span></code></pre>
 
-        function updateUI() {
-            if (isLoginMode) {
-                loginBtn.textContent = "Login";
-                registerBtn.textContent = "Register";
-                registerBtn.style.display = "inline-flex";
-                toggleBtn.textContent = "Don't have an account? Register →";
-            } else {
-                loginBtn.textContent = "Create Account";
-                registerBtn.textContent = "Back to Login";
-                registerBtn.style.display = "inline-flex";
-                toggleBtn.textContent = "← Back to Login";
-            }
-        }
+  <h3>Health</h3>
+<pre><button class="cp">copy</button><code>curl https://api-forgegrit.serveousercontent.com/health</code></pre>
+  <p><code>{"status":"ok","ollama":"ok"}</code> means inference is up. <code>degraded</code> means the backend is unreachable &mdash; retry shortly.</p>
+</section>
 
-        loginBtn.addEventListener("click", isLoginMode ? handleLogin : () => {
-            isLoginMode = true;
-            updateUI();
-            emailInput.value = "";
-            passwordInput.value = "";
-            clearMessage();
-        });
+<section>
+  <h2>Parameters</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>model</code></td><td>string</td><td>Required. One of the IDs above.</td></tr>
+      <tr><td><code>messages</code></td><td>array</td><td>Required. <code>{role, content}</code> objects. Roles: <code>system</code>, <code>user</code>, <code>assistant</code>.</td></tr>
+      <tr><td><code>stream</code></td><td>boolean</td><td>SSE streaming. Default <code>false</code>.</td></tr>
+      <tr><td><code>temperature</code></td><td>number</td><td>Sampling randomness.</td></tr>
+      <tr><td><code>top_p</code></td><td>number</td><td>Nucleus sampling.</td></tr>
+      <tr><td><code>max_tokens</code></td><td>integer</td><td>Response length cap.</td></tr>
+    </tbody>
+  </table>
+</section>
 
-        registerBtn.addEventListener("click", isLoginMode ? () => {
-            isLoginMode = false;
-            updateUI();
-            passwordInput.value = "";
-            clearMessage();
-        } : handleRegister);
+<section>
+  <h2>Limits &amp; errors</h2>
+  <p>100,000 requests per day per account. The counter resets at midnight. There is no paid tier to upgrade to &mdash; the limit exists to stop abuse, not to sell you anything.</p>
+  <table>
+    <thead><tr><th>Code</th><th>Meaning</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>400</code></td><td>Missing <code>model</code> or <code>messages</code></td><td>Check the request body</td></tr>
+      <tr><td><code>401</code></td><td>Missing or invalid key</td><td>Verify the <code>Authorization</code> header</td></tr>
+      <tr><td><code>404</code></td><td>Unknown model ID</td><td>Call <code>/v1/models</code> for the live list</td></tr>
+      <tr><td><code>409</code></td><td>Email already registered</td><td>Log in instead</td></tr>
+      <tr><td><code>429</code></td><td>Daily limit hit</td><td>Wait for the reset</td></tr>
+      <tr><td><code>502</code></td><td>Inference backend down</td><td>Check <code>/health</code>, retry</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>Availability:</b> ForgeGrit runs on self-hosted hardware behind a tunnel. If a request times out, the tunnel is likely cycling &mdash; <code>/health</code> tells you for sure.</div>
+</section>
 
-        toggleBtn.addEventListener("click", () => {
-            isLoginMode = !isLoginMode;
-            updateUI();
-            passwordInput.value = "";
-            clearMessage();
-        });
+<footer>
+  <div class="wrap">ForgeGrit &middot; Frontier models, free, forever &middot; No ads, no upsell, no credit card</div>
+</footer>
 
-        copyBtn.addEventListener("click", () => {
-            navigator.clipboard.writeText(apiKeyValue.textContent);
-            copyBtn.textContent = "✅ Copied!";
-            setTimeout(() => {
-                copyBtn.textContent = "📋 Copy to Clipboard";
-            }, 2000);
-        });
+</div>
 
-        passwordInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-                isLoginMode ? handleLogin() : handleRegister();
-            }
-        });
+<script>
+var API = "https://api-forgegrit.serveousercontent.com";
 
-        updateUI();
-    </script>
+function $(id){ return document.getElementById(id); }
+var email = $("email"), pass = $("password"), msg = $("msg");
+var loginBtn = $("login"), regBtn = $("register");
+var keybox = $("keybox"), keyval = $("keyval"), form = $("form");
+
+function say(t, cls){ msg.textContent = t; msg.className = "msg " + cls; msg.style.display = "block"; }
+function hide(){ msg.style.display = "none"; }
+
+async function call(path){
+  var e = email.value.trim(), p = pass.value;
+  if(!e || !p){ say("Email and password required.", "err"); return null; }
+  var r = await fetch(API + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: e, password: p })
+  });
+  return { ok: r.ok, data: await r.json() };
+}
+
+loginBtn.onclick = async function(){
+  hide(); loginBtn.disabled = true; loginBtn.textContent = "...";
+  try {
+    var res = await call("/authenticate/email");
+    if(res){
+      if(!res.ok){ say(res.data.error || "Login failed.", "err"); }
+      else {
+        keyval.textContent = res.data.api_key;
+        form.style.display = "none";
+        keybox.style.display = "block";
+      }
+    }
+  } catch(err){
+    say("Can't reach the API. It may be offline - check /health.", "err");
+  } finally {
+    loginBtn.disabled = false; loginBtn.textContent = "Log in";
+  }
+};
+
+regBtn.onclick = async function(){
+  hide(); regBtn.disabled = true; regBtn.textContent = "...";
+  try {
+    var res = await call("/register");
+    if(res){
+      if(!res.ok){ say(res.data.error || "Registration failed.", "err"); }
+      else { say("Account created. Log in to get your key.", "ok"); pass.value = ""; }
+    }
+  } catch(err){
+    say("Can't reach the API. It may be offline - check /health.", "err");
+  } finally {
+    regBtn.disabled = false; regBtn.textContent = "Register";
+  }
+};
+
+pass.addEventListener("keypress", function(e){ if(e.key === "Enter") loginBtn.click(); });
+
+$("copykey").onclick = function(){
+  navigator.clipboard.writeText(keyval.textContent);
+  var b = this;
+  b.textContent = "Copied";
+  setTimeout(function(){ b.textContent = "Copy key"; }, 1600);
+};
+
+var cps = document.querySelectorAll(".cp");
+for(var i = 0; i < cps.length; i++){
+  cps[i].onclick = function(){
+    navigator.clipboard.writeText(this.parentElement.querySelector("code").innerText);
+    var b = this;
+    b.textContent = "copied";
+    setTimeout(function(){ b.textContent = "copy"; }, 1600);
+  };
+}
+
+var tabs = document.querySelectorAll(".tab");
+for(var j = 0; j < tabs.length; j++){
+  tabs[j].onclick = function(){
+    var all = document.querySelectorAll(".tab");
+    for(var k = 0; k < all.length; k++){ all[k].classList.remove("on"); }
+    var panes = document.querySelectorAll(".pane");
+    for(var m = 0; m < panes.length; m++){ panes[m].classList.remove("on"); }
+    this.classList.add("on");
+    $("p-" + this.dataset.p).classList.add("on");
+  };
+}
+
+fetch(API + "/health").then(function(r){ return r.json(); }).then(function(d){
+  var b = document.querySelector(".badge.on");
+  if(d.ollama !== "ok"){
+    b.textContent = "Degraded";
+    b.style.color = "#f87171";
+    b.style.borderColor = "rgba(248,113,113,.3)";
+    b.style.background = "rgba(248,113,113,.07)";
+  }
+}).catch(function(){});
+</script>
 </body>
 </html>
