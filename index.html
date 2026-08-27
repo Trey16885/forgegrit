@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForgeGrit — No Bullshit Models</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tagline {
+            font-size: 14px;
+            color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .form-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+        }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+            background: #151515;
+        }
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        button {
+            flex: 1;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 107, 53, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        .btn-secondary {
+            background: #0f0f0f;
+            color: #e0e0e0;
+            border: 1px solid #444;
+        }
+        .btn-secondary:hover {
+            border-color: #ff6b35;
+            background: #151515;
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.error {
+            background: rgba(255, 67, 67, 0.1);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        .message.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        .message.info {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196f3;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+        .api-key-display {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 28px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        .api-key-display h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .api-key-value {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+            word-break: break-all;
+            background: #151515;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            line-height: 1.4;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+        .copy-btn {
+            margin-top: 12px;
+            width: 100%;
+            padding: 10px;
+            font-size: 11px;
+            background: #333;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #444;
+            border-color: #555;
+        }
+        .toggle-auth {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+        .toggle-auth button {
+            background: none;
+            border: none;
+            color: #ff6b35;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+            width: auto;
+            font-size: 12px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .toggle-auth button:hover {
+            color: #f7931e;
+        }
+        .info-box {
+            background: rgba(33, 150, 243, 0.05);
+            border-left: 3px solid #2196f3;
+            padding: 12px 14px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+        .info-box code {
+            background: #0f0f0f;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #ff6b35;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">⚡</div>
+            <div class="tagline">ForgeGrit</div>
+        </div>
+
+        <div class="form-card">
+            <div id="auth-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <div class="buttons">
+                    <button class="btn-primary" id="login-btn">Login</button>
+                    <button class="btn-secondary" id="register-btn">Register</button>
+                </div>
+                <div class="toggle-auth">
+                    <button id="toggle-mode"></button>
+                </div>
+                <div class="message" id="message"></div>
+            </div>
+
+            <div class="api-key-display" id="api-key-display">
+                <h3>✅ Your API Key</h3>
+                <div class="api-key-value" id="api-key-value"></div>
+                <button class="copy-btn" id="copy-btn">📋 Copy to Clipboard</button>
+                <div class="info-box">
+                    Keep this secret! Use it in API requests:<br>
+                    <code>Authorization: Bearer &lt;key&gt;</code>
+                </div>
+                <div class="message success" style="display: block; margin-top: 12px;">
+                    ✨ You have 100,000 requests per day
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; font-size: 12px; color: #555;">
+            <p>No bullshit models • Zero cost • Full capability</p>
+        </div>
+    </div>
+
+    <script>
+        // Change this to your actual ForgeGrit API URL
+        const API_URL = "https://api-forgegrit.serveousercontent.com";
+        let isLoginMode = true;
+
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const loginBtn = document.getElementById("login-btn");
+        const registerBtn = document.getElementById("register-btn");
+        const messageEl = document.getElementById("message");
+        const apiKeyDisplay = document.getElementById("api-key-display");
+        const apiKeyValue = document.getElementById("api-key-value");
+        const copyBtn = document.getElementById("copy-btn");
+        const toggleBtn = document.getElementById("toggle-mode");
+
+        function showMessage(text, type = "info") {
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = "block";
+        }
+
+        function clearMessage() {
+            messageEl.style.display = "none";
+        }
+
+        async function handleLogin() {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showMessage("Email and password required", "error");
+                return;
+            }
+
+            try {
+                loginBtn.disabled = true;
+                const response = await fetch(`${API_URL}/authenticate/email`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showMessage(data.error || "Login failed", "error");
+                    return;
+                }
+
+                apiKeyValue.textContent = data.api_key;
+                apiKeyDisplay.style.display = "block";
+                document.getElementById("auth-form").style.display = "none";
+            } catch (err) {
+                showMessage(`Network error: ${err.message}`, "error");
+            } finally {
+                loginBtn.disabled = false;
+            }
+        }
+
+        async function handleRegister() {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showMessage("Email and password required", "error");
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage("Password must be at least 6 characters", "error");
+                return;
+            }
+
+            try {
+                registerBtn.disabled = true;
+                const response = await fetch(`${API_URL}/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showMessage(data.error || "Registration failed", "error");
+                    return;
+                }
+
+                showMessage("✅ Account created! Log in with your credentials.", "success");
+                isLoginMode = true;
+                updateUI();
+                passwordInput.value = "";
+            } catch (err) {
+                showMessage(`Network error: ${err.message}`, "error");
+            } finally {
+                registerBtn.disabled = false;
+            }
+        }
+
+        function updateUI() {
+            if (isLoginMode) {
+                loginBtn.textContent = "Login";
+                registerBtn.textContent = "Register";
+                registerBtn.style.display = "inline-flex";
+                toggleBtn.textContent = "Don't have an account? Register →";
+            } else {
+                loginBtn.textContent = "Create Account";
+                registerBtn.textContent = "Back to Login";
+                registerBtn.style.display = "inline-flex";
+                toggleBtn.textContent = "← Back to Login";
+            }
+        }
+
+        loginBtn.addEventListener("click", isLoginMode ? handleLogin : () => {
+            isLoginMode = true;
+            updateUI();
+            emailInput.value = "";
+            passwordInput.value = "";
+            clearMessage();
+        });
+
+        registerBtn.addEventListener("click", isLoginMode ? () => {
+            isLoginMode = false;
+            updateUI();
+            passwordInput.value = "";
+            clearMessage();
+        } : handleRegister);
+
+        toggleBtn.addEventListener("click", () => {
+            isLoginMode = !isLoginMode;
+            updateUI();
+            passwordInput.value = "";
+            clearMessage();
+        });
+
+        copyBtn.addEventListener("click", () => {
+            navigator.clipboard.writeText(apiKeyValue.textContent);
+            copyBtn.textContent = "✅ Copied!";
+            setTimeout(() => {
+                copyBtn.textContent = "📋 Copy to Clipboard";
+            }, 2000);
+        });
+
+        passwordInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                isLoginMode ? handleLogin() : handleRegister();
+            }
+        });
+
+        updateUI();
+    </script>
+</body>
+</html>
