@@ -218,7 +218,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
       <h4>Your API key</h4>
       <div class="keyval" id="keyval"></div>
       <div class="row"><button class="ghost" id="copykey">Copy key</button></div>
-      <div class="note" style="margin-bottom:0"><b>Store it now.</b> Send it as <code>Authorization: Bearer &lt;key&gt;</code> on every request.</div>
+      <div class="note" style="margin-bottom:0"><b>Send it as</b> <code>Authorization: Bearer &lt;key&gt;</code> on every request. Log in any time to see it again, or rotate it below if it leaks.</div>
     </div>
   </div>
 </section>
@@ -483,6 +483,7 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     <tbody>
       <tr><td><span class="meth post">POST</span></td><td><code>/register</code></td><td>Create an account</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/email</code></td><td>Exchange credentials for a key</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/rotate</code></td><td>Revoke your key and issue a new one</td></tr>
       <tr><td><span class="meth get">GET</span></td><td><code>/v1/models</code></td><td>List available models</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/v1/chat/completions</code></td><td>Chat completion (OpenAI format)</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/v1/messages</code></td><td>Chat completion (Anthropic format)</td></tr>
@@ -499,7 +500,14 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
 <pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/authenticate/email \
   -H <span class="c-str">"Content-Type: application/json"</span> \
   -d <span class="c-str">'{"email":"you@example.com","password":"your-password"}'</span></code></pre>
-  <p>Returns <code>api_key</code>, <code>owner_id</code>, and <code>rpd_limit</code>. The same account always gets the same key back.</p>
+  <p>Returns <code>api_key</code>, <code>owner_id</code>, and <code>rpd_limit</code>. Logging in again always returns the same key, so there is nothing to lose &mdash; if you misplace it, just log in.</p>
+
+  <h3>Rotate your key</h3>
+  <p>Keys do not expire. If yours ends up somewhere it shouldn't &mdash; a screenshot, a commit, a pasted log &mdash; rotate it. This revokes every existing key on the account and issues a new one. The old key stops working immediately.</p>
+<pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/authenticate/rotate \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{"email":"you@example.com","password":"your-password"}'</span></code></pre>
+  <p>Your account, usage history, and daily limit are unaffected &mdash; only the key changes.</p>
 
   <h3>Streaming</h3>
   <p>Add <code>"stream": true</code> for server-sent events. Chunks arrive as <code>data:</code> lines, terminated by <code>data: [DONE]</code>.</p>
