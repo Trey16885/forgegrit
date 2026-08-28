@@ -94,6 +94,50 @@ tr:last-child td{border-bottom:none}
 .get{background:rgba(74,222,128,.12);color:var(--green)}
 .post{background:rgba(255,107,53,.12);color:var(--orange)}
 
+.flag{
+  position:relative;border-radius:14px;padding:26px 24px;margin:8px 0 28px;
+  background:linear-gradient(150deg,rgba(255,107,53,.09),rgba(247,147,30,.03) 55%,transparent);
+  border:1px solid rgba(255,107,53,.35)
+}
+.flag .tag{
+  display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:1.2px;
+  text-transform:uppercase;padding:4px 10px;border-radius:999px;
+  background:rgba(255,107,53,.15);color:var(--orange);border:1px solid rgba(255,107,53,.35);
+  margin-bottom:12px
+}
+.flag h3{
+  margin:0;font-size:27px;font-weight:900;letter-spacing:-.5px;
+  background:linear-gradient(135deg,var(--orange),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
+}
+.flag .mid{font-family:var(--mono);font-size:12px;color:var(--dim);margin:6px 0 4px}
+.flag .claim{font-size:13.5px;color:var(--text);margin:14px 0 0;line-height:1.6}
+.grid3{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+.cell{
+  flex:1;min-width:104px;background:rgba(0,0,0,.32);border:1px solid var(--line);
+  border-radius:9px;padding:14px 12px;text-align:center
+}
+.cell .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);margin-bottom:8px}
+.cell .old{font-family:var(--mono);font-size:14px;color:#6b6b73;text-decoration:line-through;text-decoration-color:rgba(248,113,113,.6)}
+.cell .new{font-family:var(--mono);font-size:21px;font-weight:900;color:var(--green);margin-top:5px}
+.was{color:#6b6b73;text-decoration:line-through;text-decoration-color:rgba(248,113,113,.55);font-family:var(--mono);font-size:12px;white-space:nowrap}
+.free{color:var(--green);font-weight:800;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.fgcol{background:rgba(74,222,128,.05);border-left:1px solid rgba(74,222,128,.25)}
+th.fgcol{color:var(--green)}
+.mname{font-weight:600;font-size:12.5px}
+.mname small{display:block;color:var(--dim);font-weight:400;font-family:var(--mono);font-size:10.5px;margin-top:2px}
+.bigfree{
+  display:flex;gap:14px;flex-wrap:wrap;margin:20px 0 4px
+}
+.stat{
+  flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:16px;text-align:center
+}
+.stat .n{font-size:26px;font-weight:900;font-family:var(--mono);color:var(--green);line-height:1.1}
+.stat .n.strike{color:#6b6b73;text-decoration:line-through;text-decoration-color:rgba(248,113,113,.55)}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim);margin-top:7px}
+.fine{font-size:11.5px;color:#6b6b73;line-height:1.7;margin-top:14px}
+.fine b{color:var(--dim);font-weight:600}
 .note{
   background:rgba(255,107,53,.05);border-left:3px solid var(--orange);
   padding:12px 14px;border-radius:0 6px 6px 0;font-size:13px;margin:16px 0;color:var(--dim)
@@ -106,6 +150,20 @@ tr:last-child td{border-bottom:none}
 }
 .tab.on{background:var(--panel2);color:var(--orange);border-color:var(--orange)}
 .pane{display:none}.pane.on{display:block}
+/* pricing */
+.zero{color:var(--green);font-family:var(--mono);font-weight:700}
+.pricehead{
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding:22px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;margin-bottom:20px
+}
+.bignum{
+  font-size:52px;font-weight:900;line-height:1;font-family:var(--mono);
+  color:var(--green);letter-spacing:-2px
+}
+.bigunit{font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.strike{color:#4a4a52;text-decoration:line-through;font-family:var(--mono);font-size:12px}
+.no{color:var(--green);font-weight:700;font-size:12px}
 footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
 @media(max-width:600px){
   h1{font-size:30px} .mark{font-size:44px} header{padding:44px 0 32px}
@@ -122,9 +180,10 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">8 flagship models</span>
+      <span class="badge">9 flagship models</span>
       <span class="badge">OpenAI-compatible</span>
-      <span class="badge">No credit card</span>
+      <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
+      <span class="badge on">$0.00 / 1M tokens</span>
     </div>
   </div>
 </header>
@@ -240,6 +299,7 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
   <table>
     <thead><tr><th>Model ID</th><th>Family</th></tr></thead>
     <tbody>
+      <tr><td><code>trai-4-zynr</code></td><td>TrAI 4 Zynr &mdash; Super Mythos</td></tr>
       <tr><td><code>claude-opus-5</code></td><td>Claude Opus 5</td></tr>
       <tr><td><code>claude-sonnet-5</code></td><td>Claude Sonnet 5</td></tr>
       <tr><td><code>claude-opus-4-8</code></td><td>Claude Opus 4.8</td></tr>
@@ -253,6 +313,167 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
   <p>Live list, filtered to what your key can reach:</p>
 <pre><button class="cp">copy</button><code>curl https://api-forgegrit.serveousercontent.com/v1/models \
   -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span></code></pre>
+</section>
+
+<section>
+  <h2>Flagship</h2>
+
+  <div class="flag">
+    <span class="tag">Unreleased &middot; Super Mythos class</span>
+    <h3>TrAI 4 Zynr</h3>
+    <div class="mid">trai-4-zynr</div>
+    <div class="grid3">
+      <div class="cell">
+        <div class="l">Input</div>
+        <div class="old">$400M</div>
+        <div class="new">$0</div>
+      </div>
+      <div class="cell">
+        <div class="l">Output</div>
+        <div class="old">$4,000M</div>
+        <div class="new">$0</div>
+      </div>
+      <div class="cell">
+        <div class="l">Cache</div>
+        <div class="old">$20M</div>
+        <div class="new">$0</div>
+      </div>
+    </div>
+    <p class="claim">The strongest model in the Super Mythos class &mdash; ForgeGrit rates it above 200&times; Claude Mythos 5. It has never been released anywhere else at any price. Here it costs nothing.</p>
+  </div>
+
+  <div class="fine" style="margin-top:-14px">
+    TrAI 4 Zynr is ForgeGrit's own model. Its rate card and capability rating are ours, not a third party's, and it carries no independent benchmark. The vendor table below is separate and independently verifiable.
+  </div>
+</section>
+
+<section>
+  <h2>Pricing</h2>
+
+  <div class="pricehead">
+    <span class="bignum">$0.00</span>
+    <span class="bigunit">per million tokens &middot; input and output &middot; every model</span>
+  </div>
+
+  <p>That is the entire price sheet. It is not an introductory rate, a promotional credit, or a free tier sitting above a paid one &mdash; there is no paid tier to graduate into.</p>
+
+  <table>
+    <thead><tr><th>Model</th><th>Input / 1M</th><th>Output / 1M</th></tr></thead>
+    <tbody>
+      <tr><td><code>claude-opus-5</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
+      <tr><td><code>claude-sonnet-5</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
+      <tr><td><code>claude-opus-4-8</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
+      <tr><td><code>claude-fable-5</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
+      <tr><td><code>gpt-5.6-sol</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
+      <tr><td><code>moonshotai-kimi-k3</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
+      <tr><td><code>gemini-3.1-pro</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
+      <tr><td><code>gemini-3.7-flash</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Everywhere else the money usually hides</h3>
+  <table>
+    <thead><tr><th>Line item</th><th>ForgeGrit</th></tr></thead>
+    <tbody>
+      <tr><td>Setup or onboarding fee</td><td class="zero">$0.00</td></tr>
+      <tr><td>Monthly minimum</td><td class="zero">$0.00</td></tr>
+      <tr><td>Overage past the daily limit</td><td><span class="no">Not billed</span> &mdash; the request is refused</td></tr>
+      <tr><td>Priority or "pro" tier</td><td><span class="no">Does not exist</span></td></tr>
+      <tr><td>Credit card to register</td><td><span class="no">Not collected</span></td></tr>
+      <tr><td>Trial credits that expire</td><td><span class="no">None issued</span></td></tr>
+      <tr><td>Charge for a failed request</td><td class="zero">$0.00</td></tr>
+      <tr><td>Data sold or trained on</td><td><span class="no">No</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>So what's the catch</h3>
+  <p>Honestly: <b style="color:var(--text)">uptime</b>. ForgeGrit runs on self-hosted hardware behind a tunnel, paid for out of pocket. Nobody is billed because nobody is being sold anything &mdash; but that also means there is no SLA, no support contract, and no promise the endpoint answers at 3am. <code>/health</code> is the honest answer at any given moment.</p>
+  <p>The 100,000 daily requests exist to stop one client from starving everyone else. Hit it and you get a <code>429</code>, never an invoice.</p>
+</section>
+
+<section>
+  <h2>Pricing</h2>
+  <p>Every other model here has a published rate card. Below is what each costs on its own API, in USD per million tokens &mdash; and what the identical model costs on ForgeGrit.</p>
+
+  <div class="bigfree">
+    <div class="stat"><div class="n">$0</div><div class="l">Input tokens</div></div>
+    <div class="stat"><div class="n">$0</div><div class="l">Output tokens</div></div>
+    <div class="stat"><div class="n">$0</div><div class="l">Cache tokens</div></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Input</th>
+        <th>Output</th>
+        <th>Cache</th>
+        <th class="fgcol">ForgeGrit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="mname">Claude Fable 5<small>claude-fable-5</small></td>
+        <td class="was">$10.00</td><td class="was">$50.00</td><td class="was">$1.00</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">Claude Opus 5<small>claude-opus-5</small></td>
+        <td class="was">$5.00</td><td class="was">$25.00</td><td class="was">$0.50</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">Claude Opus 4.8<small>claude-opus-4-8</small></td>
+        <td class="was">$5.00</td><td class="was">$25.00</td><td class="was">$0.50</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">GPT-5.6 Sol<small>gpt-5.6-sol</small></td>
+        <td class="was">$4.00<sup>1</sup></td><td class="was">$20.00<sup>1</sup></td><td class="was">$0.40</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">Claude Sonnet 5<small>claude-sonnet-5</small></td>
+        <td class="was">$3.00<sup>2</sup></td><td class="was">$15.00<sup>2</sup></td><td class="was">$0.30</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">Kimi K3<small>moonshotai-kimi-k3</small></td>
+        <td class="was">$3.00</td><td class="was">$15.00</td><td class="was">$0.30</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">Gemini 3.1 Pro<small>gemini-3.1-pro</small></td>
+        <td class="was">$2.00<sup>3</sup></td><td class="was">$12.00</td><td class="was">$0.20</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">Gemini 3.7 Flash<small>gemini-3.7-flash</small></td>
+        <td class="was">$0.75<sup>4</sup></td><td class="was">$3.75<sup>4</sup></td><td class="was">$0.08</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>What that means in practice</h3>
+  <p>A month of moderate agent work &mdash; 10M input tokens and 2M output &mdash; run on the top model:</p>
+  <div class="bigfree">
+    <div class="stat"><div class="n strike">$150</div><div class="l">Fable 5, list price</div></div>
+    <div class="stat"><div class="n strike">$100</div><div class="l">Opus 5, list price</div></div>
+    <div class="stat"><div class="n">$0.00</div><div class="l">Either one, here</div></div>
+  </div>
+
+  <div class="note" style="margin-top:22px">
+    <b>There is no catch and no upsell.</b> No paid tier exists. No credit card is collected. No trial credits expire into a bill. The only limit is 100,000 requests a day, and it is there to stop abuse, not to sell you a way around it.
+  </div>
+
+  <div class="fine">
+    <b>Rates verified 27 August 2026</b> against each provider's published pricing. Cache figures are cache-read (hit) rates. Vendor pricing moves; check the source before budgeting against these numbers.<br>
+    <sup>1</sup> GPT-5.6 Sol promotional rate through 21 Nov 2026; standard is $5.00 / $30.00.<br>
+    <sup>2</sup> Claude Sonnet 5 standard rate; introductory $2.00 / $10.00 runs through 31 Aug 2026.<br>
+    <sup>3</sup> Gemini 3.1 Pro input doubles to $4.00 on prompts above 200K tokens.<br>
+    <sup>4</sup> Gemini 3.7 Flash introductory rate through 31 Dec 2026; doubles to $1.50 / $7.50 on 1 Jan 2027.
+  </div>
 </section>
 
 <section>
