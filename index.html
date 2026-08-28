@@ -94,6 +94,14 @@ tr:last-child td{border-bottom:none}
 .get{background:rgba(74,222,128,.12);color:var(--green)}
 .post{background:rgba(255,107,53,.12);color:var(--orange)}
 
+.danger{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff}
+.danger:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(220,38,38,.35)}
+.keyrow{display:flex;gap:10px;margin-top:12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.confirm{
+  background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.3);
+  border-radius:9px;padding:14px;margin-top:12px;font-size:13px;display:none
+}
 .flag{
   position:relative;border-radius:14px;padding:26px 24px;margin:8px 0 28px;
   background:linear-gradient(150deg,rgba(255,107,53,.09),rgba(247,147,30,.03) 55%,transparent);
@@ -217,7 +225,17 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="keybox" id="keybox">
       <h4>Your API key</h4>
       <div class="keyval" id="keyval"></div>
-      <div class="row"><button class="ghost" id="copykey">Copy key</button></div>
+      <div class="keyrow">
+        <button class="ghost" id="copykey">Copy key</button>
+        <button class="danger" id="rotatekey">Rotate key</button>
+      </div>
+      <div class="confirm" id="rotconfirm">
+        <b>Rotate this key?</b> Your current key stops working immediately and anything using it breaks until you paste the new one. Your account, usage, and daily limit are unaffected.
+        <div class="keyrow">
+          <button class="danger" id="rotyes">Yes, rotate</button>
+          <button class="ghost" id="rotno">Cancel</button>
+        </div>
+      </div>
       <div class="note" style="margin-bottom:0"><b>Send it as</b> <code>Authorization: Bearer &lt;key&gt;</code> on every request. Log in any time to see it again, or rotate it below if it leaks.</div>
     </div>
   </div>
@@ -572,6 +590,8 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
 
 <script>
 var API = "https://api-forgegrit.serveousercontent.com";
+var SESSION = { key: null, email: null, password: null };
+
 
 function $(id){ return document.getElementById(id); }
 var email = $("email"), pass = $("password"), msg = $("msg");
@@ -599,6 +619,9 @@ loginBtn.onclick = async function(){
     if(res){
       if(!res.ok){ say(res.data.error || "Login failed.", "err"); }
       else {
+        SESSION.key = res.data.api_key;
+        SESSION.email = email.value.trim();
+        SESSION.password = pass.value;
         keyval.textContent = res.data.api_key;
         form.style.display = "none";
         keybox.style.display = "block";
@@ -656,6 +679,42 @@ for(var j = 0; j < tabs.length; j++){
     $("p-" + this.dataset.p).classList.add("on");
   };
 }
+
+
+// ---------------------------------------------------------------- rotate key
+$("rotatekey").onclick = function(){
+  $("rotconfirm").style.display = "block";
+};
+$("rotno").onclick = function(){
+  $("rotconfirm").style.display = "none";
+};
+$("rotyes").onclick = async function(){
+  var btn = this;
+  btn.disabled = true; btn.textContent = "Rotating";
+  try {
+    var r = await fetch(API + "/authenticate/rotate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: SESSION.email, password: SESSION.password })
+    });
+    var d = await r.json();
+    if(!r.ok){
+      alert(d.error || "Rotation failed.");
+      return;
+    }
+    SESSION.key = d.api_key;
+    keyval.textContent = d.api_key;
+    $("rotconfirm").style.display = "none";
+    var note = $("copykey");
+    note.textContent = "New key ready";
+    setTimeout(function(){ note.textContent = "Copy key"; }, 2200);
+  } catch(err){
+    alert("Can't reach the API.");
+  } finally {
+    btn.disabled = false; btn.textContent = "Yes, rotate";
+  }
+};
+
 
 fetch(API + "/health").then(function(r){ return r.json(); }).then(function(d){
   var b = document.querySelector(".badge.on");
