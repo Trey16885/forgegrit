@@ -180,7 +180,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">9 flagship models</span>
+      <span class="badge">10 flagship models</span>
       <span class="badge">OpenAI-compatible</span>
       <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
       <span class="badge on">$0.00 / 1M tokens</span>
@@ -306,6 +306,7 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
       <tr><td><code>claude-fable-5</code></td><td>Claude Fable 5</td></tr>
       <tr><td><code>gpt-5.6-sol</code></td><td>GPT 5.6 Sol</td></tr>
       <tr><td><code>moonshotai-kimi-k3</code></td><td>Kimi K3</td></tr>
+      <tr><td><code>z-ai-glm-5.3</code></td><td>GLM 5.3</td></tr>
       <tr><td><code>gemini-3.1-pro</code></td><td>Gemini 3.1 Pro</td></tr>
       <tr><td><code>gemini-3.7-flash</code></td><td>Gemini 3.7 Flash</td></tr>
     </tbody>
@@ -443,6 +444,11 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
         <td class="fgcol free">$0</td>
       </tr>
       <tr>
+        <td class="mname">GLM 5.3<small>z-ai-glm-5.3</small></td>
+        <td class="was">$1.40<sup>5</sup></td><td class="was">$4.40<sup>5</sup></td><td class="was">$0.26<sup>5</sup></td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
         <td class="mname">Gemini 3.1 Pro<small>gemini-3.1-pro</small></td>
         <td class="was">$2.00<sup>3</sup></td><td class="was">$12.00</td><td class="was">$0.20</td>
         <td class="fgcol free">$0</td>
@@ -472,7 +478,8 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     <sup>1</sup> GPT-5.6 Sol promotional rate through 21 Nov 2026; standard is $5.00 / $30.00.<br>
     <sup>2</sup> Claude Sonnet 5 standard rate; introductory $2.00 / $10.00 runs through 31 Aug 2026.<br>
     <sup>3</sup> Gemini 3.1 Pro input doubles to $4.00 on prompts above 200K tokens.<br>
-    <sup>4</sup> Gemini 3.7 Flash introductory rate through 31 Dec 2026; doubles to $1.50 / $7.50 on 1 Jan 2027.
+    <sup>4</sup> Gemini 3.7 Flash introductory rate through 31 Dec 2026; doubles to $1.50 / $7.50 on 1 Jan 2027.<br>
+    <sup>5</sup> Z.ai has not published a per-token rate for GLM 5.3; these are the GLM 5.2 rates its price table still lists. GLM 5.3 currently sells only through Z.ai's Coding Plan at $18&ndash;$168/month.
   </div>
 </section>
 
@@ -522,7 +529,7 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
 
   <h3>Health</h3>
 <pre><button class="cp">copy</button><code>curl https://api-forgegrit.serveousercontent.com/health</code></pre>
-  <p><code>{"status":"ok","ollama":"ok"}</code> means inference is up. <code>degraded</code> means the backend is unreachable &mdash; retry shortly.</p>
+  <p><code>{"status":"ok","inference":"ok"}</code> means inference is up. <code>degraded</code> means the backend is unreachable &mdash; retry shortly.</p>
 </section>
 
 <section>
@@ -652,7 +659,7 @@ for(var j = 0; j < tabs.length; j++){
 
 fetch(API + "/health").then(function(r){ return r.json(); }).then(function(d){
   var b = document.querySelector(".badge.on");
-  if(d.ollama !== "ok"){
+  if(d.inference !== "ok"){
     b.textContent = "Degraded";
     b.style.color = "#f87171";
     b.style.borderColor = "rgba(248,113,113,.3)";
