@@ -160,16 +160,6 @@ th.fgcol{color:var(--green)}
 .pane{display:none}.pane.on{display:block}
 /* pricing */
 .zero{color:var(--green);font-family:var(--mono);font-weight:700}
-.pricehead{
-  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
-  padding:22px;background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;margin-bottom:20px
-}
-.bignum{
-  font-size:52px;font-weight:900;line-height:1;font-family:var(--mono);
-  color:var(--green);letter-spacing:-2px
-}
-.bigunit{font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
 .strike{color:#4a4a52;text-decoration:line-through;font-family:var(--mono);font-size:12px}
 .no{color:var(--green);font-weight:700;font-size:12px}
 footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
@@ -188,7 +178,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">11 flagship models</span>
+      <span class="badge">15 flagship models</span>
       <span class="badge">OpenAI-compatible</span>
       <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
       <span class="badge on">$0.00 / 1M tokens</span>
@@ -318,11 +308,15 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     <thead><tr><th>Model ID</th><th>Family</th></tr></thead>
     <tbody>
       <tr><td><code>trai-4-zynr</code></td><td>TrAI 4 Zynr &mdash; Super Mythos</td></tr>
+      <tr><td><code>claude-mythos-5</code></td><td>Claude Mythos 5 &mdash; Mythos tier</td></tr>
       <tr><td><code>claude-opus-5</code></td><td>Claude Opus 5</td></tr>
       <tr><td><code>claude-sonnet-5</code></td><td>Claude Sonnet 5</td></tr>
       <tr><td><code>claude-opus-4-8</code></td><td>Claude Opus 4.8</td></tr>
+      <tr><td><code>claude-fable-5-1</code></td><td>Claude Fable 5.1 &mdash; Mythos tier</td></tr>
       <tr><td><code>claude-fable-5</code></td><td>Claude Fable 5</td></tr>
       <tr><td><code>gpt-5.6-sol</code></td><td>GPT 5.6 Sol</td></tr>
+      <tr><td><code>gpt-5.6-terra</code></td><td>GPT 5.6 Terra</td></tr>
+      <tr><td><code>gpt-5.6-luna</code></td><td>GPT 5.6 Luna</td></tr>
       <tr><td><code>moonshotai-kimi-k3</code></td><td>Kimi K3</td></tr>
       <tr><td><code>z-ai-glm-5.3</code></td><td>GLM 5.3</td></tr>
       <tr><td><code>xai-grok-4.5</code></td><td>Grok 4.5</td></tr>
@@ -369,50 +363,6 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
 
 <section>
   <h2>Pricing</h2>
-
-  <div class="pricehead">
-    <span class="bignum">$0.00</span>
-    <span class="bigunit">per million tokens &middot; input and output &middot; every model</span>
-  </div>
-
-  <p>That is the entire price sheet. It is not an introductory rate, a promotional credit, or a free tier sitting above a paid one &mdash; there is no paid tier to graduate into.</p>
-
-  <table>
-    <thead><tr><th>Model</th><th>Input / 1M</th><th>Output / 1M</th></tr></thead>
-    <tbody>
-      <tr><td><code>claude-opus-5</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
-      <tr><td><code>claude-sonnet-5</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
-      <tr><td><code>claude-opus-4-8</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
-      <tr><td><code>claude-fable-5</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
-      <tr><td><code>gpt-5.6-sol</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
-      <tr><td><code>moonshotai-kimi-k3</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
-      <tr><td><code>gemini-3.1-pro</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
-      <tr><td><code>gemini-3.7-flash</code></td><td class="zero">$0.00</td><td class="zero">$0.00</td></tr>
-    </tbody>
-  </table>
-
-  <h3>Everywhere else the money usually hides</h3>
-  <table>
-    <thead><tr><th>Line item</th><th>ForgeGrit</th></tr></thead>
-    <tbody>
-      <tr><td>Setup or onboarding fee</td><td class="zero">$0.00</td></tr>
-      <tr><td>Monthly minimum</td><td class="zero">$0.00</td></tr>
-      <tr><td>Overage past the daily limit</td><td><span class="no">Not billed</span> &mdash; the request is refused</td></tr>
-      <tr><td>Priority or "pro" tier</td><td><span class="no">Does not exist</span></td></tr>
-      <tr><td>Credit card to register</td><td><span class="no">Not collected</span></td></tr>
-      <tr><td>Trial credits that expire</td><td><span class="no">None issued</span></td></tr>
-      <tr><td>Charge for a failed request</td><td class="zero">$0.00</td></tr>
-      <tr><td>Data sold or trained on</td><td><span class="no">No</span></td></tr>
-    </tbody>
-  </table>
-
-  <h3>So what's the catch</h3>
-  <p>Honestly: <b style="color:var(--text)">uptime</b>. ForgeGrit runs on self-hosted hardware behind a tunnel, paid for out of pocket. Nobody is billed because nobody is being sold anything &mdash; but that also means there is no SLA, no support contract, and no promise the endpoint answers at 3am. <code>/health</code> is the honest answer at any given moment.</p>
-  <p>The 100,000 daily requests exist to stop one client from starving everyone else. Hit it and you get a <code>429</code>, never an invoice.</p>
-</section>
-
-<section>
-  <h2>Pricing</h2>
   <p>Every other model here has a published rate card. Below is what each costs on its own API, in USD per million tokens &mdash; and what the identical model costs on ForgeGrit.</p>
 
   <div class="bigfree">
@@ -432,6 +382,16 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td class="mname">Claude Mythos 5<small>claude-mythos-5</small></td>
+        <td class="was">n/a<sup>9</sup></td><td class="was">n/a<sup>9</sup></td><td class="was">n/a<sup>9</sup></td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">Claude Fable 5.1<small>claude-fable-5-1</small></td>
+        <td class="was">$10.00</td><td class="was">$50.00</td><td class="was">$0.25<sup>10</sup></td>
+        <td class="fgcol free">$0</td>
+      </tr>
       <tr>
         <td class="mname">Claude Fable 5<small>claude-fable-5</small></td>
         <td class="was">$10.00</td><td class="was">$50.00</td><td class="was">$1.00</td>
@@ -463,6 +423,11 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
         <td class="fgcol free">$0</td>
       </tr>
       <tr>
+        <td class="mname">GPT 5.6 Terra<small>gpt-5.6-terra</small></td>
+        <td class="was">$2.00<sup>8</sup></td><td class="was">$12.00</td><td class="was">$0.20</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
         <td class="mname">Grok 4.5<small>xai-grok-4.5</small></td>
         <td class="was">$2.00<sup>6</sup></td><td class="was">$6.00</td><td class="was">$0.30<sup>7</sup></td>
         <td class="fgcol free">$0</td>
@@ -482,6 +447,11 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
         <td class="was">$0.75<sup>4</sup></td><td class="was">$3.75<sup>4</sup></td><td class="was">$0.08</td>
         <td class="fgcol free">$0</td>
       </tr>
+      <tr>
+        <td class="mname">GPT 5.6 Luna<small>gpt-5.6-luna</small></td>
+        <td class="was">$0.20<sup>8</sup></td><td class="was">$1.20</td><td class="was">$0.02</td>
+        <td class="fgcol free">$0</td>
+      </tr>
     </tbody>
   </table>
 
@@ -497,6 +467,25 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     <b>There is no catch and no upsell.</b> No paid tier exists. No credit card is collected. No trial credits expire into a bill. The only limit is 100,000 requests a day, and it is there to stop abuse, not to sell you a way around it.
   </div>
 
+  <h3>Everywhere else the money usually hides</h3>
+  <table>
+    <thead><tr><th>Line item</th><th>ForgeGrit</th></tr></thead>
+    <tbody>
+      <tr><td>Setup or onboarding fee</td><td class="zero">$0.00</td></tr>
+      <tr><td>Monthly minimum</td><td class="zero">$0.00</td></tr>
+      <tr><td>Overage past the daily limit</td><td><span class="no">Not billed</span> &mdash; the request is refused</td></tr>
+      <tr><td>Priority or "pro" tier</td><td><span class="no">Does not exist</span></td></tr>
+      <tr><td>Credit card to register</td><td><span class="no">Not collected</span></td></tr>
+      <tr><td>Trial credits that expire</td><td><span class="no">None issued</span></td></tr>
+      <tr><td>Charge for a failed request</td><td class="zero">$0.00</td></tr>
+      <tr><td>Data sold or trained on</td><td><span class="no">No</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>So what's the catch</h3>
+  <p>Honestly: <b style="color:var(--text)">uptime</b>. ForgeGrit runs on self-hosted hardware behind a tunnel, paid for out of pocket. Nobody is billed because nobody is being sold anything &mdash; but that also means there is no SLA, no support contract, and no promise the endpoint answers at 3am. <code>/health</code> is the honest answer at any given moment.</p>
+  <p>The 100,000 daily requests exist to stop one client from starving everyone else. Hit it and you get a <code>429</code>, never an invoice.</p>
+
   <div class="fine">
     <b>Rates verified 27 August 2026</b> against each provider's published pricing. Cache figures are cache-read (hit) rates. Vendor pricing moves; check the source before budgeting against these numbers.<br>
     <sup>1</sup> GPT-5.6 Sol promotional rate through 21 Nov 2026; standard is $5.00 / $30.00.<br>
@@ -505,7 +494,10 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     <sup>4</sup> Gemini 3.7 Flash introductory rate through 31 Dec 2026; doubles to $1.50 / $7.50 on 1 Jan 2027.<br>
     <sup>5</sup> Z.ai has not published a per-token rate for GLM 5.3; these are the GLM 5.2 rates its price table still lists. GLM 5.3 currently sells only through Z.ai's Coding Plan at $18&ndash;$168/month.<br>
     <sup>6</sup> Grok 4.5 doubles to $4.00 / $12.00 on prompts at or above 200K tokens, and again for priority processing.<br>
-    <sup>7</sup> Sources disagree on Grok 4.5's cache rate: some list $0.30, others $0.50. The $0.50 figure appears to be Grok 4.6's.
+    <sup>7</sup> Sources disagree on Grok 4.5's cache rate: some list $0.30, others $0.50. The $0.50 figure appears to be Grok 4.6's.<br>
+    <sup>8</sup> Terra and Luna rates reflect OpenAI's 30 Jul 2026 cut. Long-context requests meter higher: Terra $4.00 / $18.00, Luna $0.40 / $1.80.<br>
+    <sup>9</sup> Claude Mythos 5 has no public rate card. Anthropic's Mythos tier is not generally available; access runs through Project Glasswing with a small number of vetted organisations.<br>
+    <sup>10</sup> Fable 5.1 shipped 1 Sep 2026. Input and output match Fable 5; the cache read fell 75% to $0.25 &mdash; 2.5% of its input rate rather than the 10% most models charge, and half what Opus 5 charges to read cache.
   </div>
 </section>
 
@@ -517,7 +509,13 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
       <tr><td><span class="meth post">POST</span></td><td><code>/register</code></td><td>Create an account</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/email</code></td><td>Exchange credentials for a key</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/rotate</code></td><td>Revoke your key and issue a new one</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/status</code></td><td>Check whether 2FA is on</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/change-password</code></td><td>Change your password</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/2fa/setup</code></td><td>Generate a TOTP secret</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/2fa/enable</code></td><td>Confirm the secret and switch 2FA on</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/authenticate/2fa/disable</code></td><td>Switch 2FA off</td></tr>
       <tr><td><span class="meth get">GET</span></td><td><code>/v1/models</code></td><td>List available models</td></tr>
+      <tr><td><span class="meth get">GET</span></td><td><code>/v1/usage</code></td><td>Requests used and remaining today</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/v1/chat/completions</code></td><td>Chat completion (OpenAI format)</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/v1/messages</code></td><td>Chat completion (Anthropic format)</td></tr>
       <tr><td><span class="meth get">GET</span></td><td><code>/health</code></td><td>Service status &mdash; no key needed</td></tr>
@@ -541,6 +539,29 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
   -H <span class="c-str">"Content-Type: application/json"</span> \
   -d <span class="c-str">'{"email":"you@example.com","password":"your-password"}'</span></code></pre>
   <p>Your account, usage history, and daily limit are unaffected &mdash; only the key changes.</p>
+
+  <h3>Two-factor authentication</h3>
+  <p>ForgeGrit supports time-based one-time codes (TOTP) from any authenticator app &mdash; Aegis, Google Authenticator, 1Password, whatever you already use. With it on, a stolen password is not enough to log in, and a code someone captures is dead within thirty seconds.</p>
+  <p>Enrol in two calls. The first returns a secret and an <code>otpauth://</code> URI:</p>
+<pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/authenticate/2fa/setup \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{"email":"you@example.com","password":"your-password"}'</span></code></pre>
+  <p>Add the secret to your authenticator, then confirm with a live code:</p>
+<pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/authenticate/2fa/enable \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{"email":"you@example.com","password":"your-password","code":"123456"}'</span></code></pre>
+  <p>From then on, include <code>code</code> when you log in, rotate, or change your password. Each code works once &mdash; reusing one returns <code>code_reused</code>, so wait for the next.</p>
+  <p><code>/authenticate/2fa/disable</code> turns it off and takes the same password plus code.</p>
+
+  <h3>Change your password</h3>
+<pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/authenticate/change-password \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{"email":"you@example.com","password":"old","new_password":"new","code":"123456"}'</span></code></pre>
+  <p>Your API key survives a password change. Omit <code>code</code> if 2FA is off.</p>
+
+  <h3>Using ForgeGrit inside someone else&rsquo;s app</h3>
+  <p>Because keys are free and per-account, apps can ask each user for their own ForgeGrit key instead of shipping one. Good pattern &mdash; but get your key here and paste it in.</p>
+  <div class="note"><b>Never type your ForgeGrit password into a third-party app.</b> An app that asks for your email and password can read it in plaintext, and most people reuse passwords. Give it your API key instead: a key only reaches ForgeGrit, and you can revoke it here in one click. Turning on 2FA closes the gap further &mdash; a captured password is useless without a live code.</div>
 
   <h3>Streaming</h3>
   <p>Add <code>"stream": true</code> for server-sent events. Chunks arrive as <code>data:</code> lines, terminated by <code>data: [DONE]</code>.</p>
@@ -575,7 +596,10 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
 
 <section>
   <h2>Limits &amp; errors</h2>
-  <p>100,000 requests per day per account. The counter resets at midnight. There is no paid tier to upgrade to &mdash; the limit exists to stop abuse, not to sell you anything.</p>
+  <p>Check where you stand at any time:</p>
+<pre><button class="cp">copy</button><code>curl https://api-forgegrit.serveousercontent.com/v1/usage \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span></code></pre>
+  <p>100,000 requests per day per account &mdash; the quota follows the account, not the key, so rotating does not reset it. The counter resets at midnight. There is no paid tier to upgrade to &mdash; the limit exists to stop abuse, not to sell you anything.</p>
   <table>
     <thead><tr><th>Code</th><th>Meaning</th><th>Fix</th></tr></thead>
     <tbody>
