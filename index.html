@@ -206,6 +206,11 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
         <label for="password">Password</label>
         <input type="password" id="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password">
       </div>
+      <div class="field" id="codefield" style="display:none">
+        <label for="code">Authentication code</label>
+        <input type="text" id="code" placeholder="123456" inputmode="numeric"
+               autocomplete="one-time-code" maxlength="6">
+      </div>
       <div class="row">
         <button class="primary" id="login">Log in</button>
         <button class="ghost" id="register">Register</button>
@@ -221,6 +226,11 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
       </div>
       <div class="confirm" id="rotconfirm">
         <b>Rotate this key?</b> Your current key stops working immediately and anything using it breaks until you paste the new one. Your account, usage, and daily limit are unaffected.
+        <div class="field" id="rotcodefield" style="display:none;margin-top:12px">
+          <label for="rotcode">Authentication code</label>
+          <input type="text" id="rotcode" placeholder="123456" inputmode="numeric"
+                 autocomplete="one-time-code" maxlength="6">
+        </div>
         <div class="keyrow">
           <button class="danger" id="rotyes">Yes, rotate</button>
           <button class="ghost" id="rotno">Cancel</button>
@@ -629,13 +639,14 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
 
 <script>
 var API = "https://api-forgegrit.serveousercontent.com";
-var SESSION = { key: null, email: null, password: null };
+var SESSION = { key: null, email: null, password: null, twofa: false };
 
 
 function $(id){ return document.getElementById(id); }
 var email = $("email"), pass = $("password"), msg = $("msg");
 var loginBtn = $("login"), regBtn = $("register");
 var keybox = $("keybox"), keyval = $("keyval"), form = $("form");
+var codeInput = $("code"), codeField = $("codefield");
 
 function say(t, cls){ msg.textContent = t; msg.className = "msg " + cls; msg.style.display = "block"; }
 function hide(){ msg.style.display = "none"; }
@@ -643,10 +654,15 @@ function hide(){ msg.style.display = "none"; }
 async function call(path){
   var e = email.value.trim(), p = pass.value;
   if(!e || !p){ say("Email and password required.", "err"); return null; }
+
+  var body = { email: e, password: p };
+  var c = codeInput.value.trim();
+  if(c) body.code = c;
+
   var r = await fetch(API + path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: e, password: p })
+    body: JSON.stringify(body)
   });
   return { ok: r.ok, data: await r.json() };
 }
@@ -656,11 +672,25 @@ loginBtn.onclick = async function(){
   try {
     var res = await call("/authenticate/email");
     if(res){
-      if(!res.ok){ say(res.data.error || "Login failed.", "err"); }
+      if(!res.ok){
+        if(res.data.requires_2fa){
+          SESSION.twofa = true;
+          codeField.style.display = "block";
+          codeInput.value = "";
+          codeInput.focus();
+          say(res.data.code_reused
+                ? res.data.error
+                : "This account uses two-factor authentication. Enter the current code from your authenticator.",
+              "err");
+        } else {
+          say(res.data.error || "Login failed.", "err");
+        }
+      }
       else {
         SESSION.key = res.data.api_key;
         SESSION.email = email.value.trim();
         SESSION.password = pass.value;
+        if(codeInput.value.trim()) SESSION.twofa = true;
         keyval.textContent = res.data.api_key;
         form.style.display = "none";
         keybox.style.display = "block";
@@ -689,6 +719,10 @@ regBtn.onclick = async function(){
 };
 
 pass.addEventListener("keypress", function(e){ if(e.key === "Enter") loginBtn.click(); });
+codeInput.addEventListener("keypress", function(e){ if(e.key === "Enter") loginBtn.click(); });
+codeInput.addEventListener("input", function(){
+  this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
+});
 
 $("copykey").onclick = function(){
   navigator.clipboard.writeText(keyval.textContent);
@@ -723,6 +757,11 @@ for(var j = 0; j < tabs.length; j++){
 // ---------------------------------------------------------------- rotate key
 $("rotatekey").onclick = function(){
   $("rotconfirm").style.display = "block";
+  if(SESSION.twofa){
+    $("rotcodefield").style.display = "block";
+    $("rotcode").value = "";
+    $("rotcode").focus();
+  }
 };
 $("rotno").onclick = function(){
   $("rotconfirm").style.display = "none";
@@ -731,14 +770,28 @@ $("rotyes").onclick = async function(){
   var btn = this;
   btn.disabled = true; btn.textContent = "Rotating";
   try {
+    var body = { email: SESSION.email, password: SESSION.password };
+    var rc = $("rotcode").value.trim();
+    if(rc) body.code = rc;
+
     var r = await fetch(API + "/authenticate/rotate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: SESSION.email, password: SESSION.password })
+      body: JSON.stringify(body)
     });
     var d = await r.json();
     if(!r.ok){
-      alert(d.error || "Rotation failed.");
+      if(d.requires_2fa){
+        SESSION.twofa = true;
+        $("rotcodefield").style.display = "block";
+        $("rotcode").value = "";
+        $("rotcode").focus();
+        alert(d.code_reused
+              ? d.error
+              : "Enter the current code from your authenticator to rotate.");
+      } else {
+        alert(d.error || "Rotation failed.");
+      }
       return;
     }
     SESSION.key = d.api_key;
