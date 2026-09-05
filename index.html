@@ -178,7 +178,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">15 flagship models</span>
+      <span class="badge">16 flagship models</span>
       <span class="badge">OpenAI-compatible</span>
       <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
       <span class="badge on">$0.00 / 1M tokens</span>
@@ -314,6 +314,7 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
       <tr><td><code>claude-opus-4-8</code></td><td>Claude Opus 4.8</td></tr>
       <tr><td><code>claude-fable-5-1</code></td><td>Claude Fable 5.1 &mdash; Mythos tier</td></tr>
       <tr><td><code>claude-fable-5</code></td><td>Claude Fable 5</td></tr>
+      <tr><td><code>gpt-6-astra</code></td><td>GPT 6 Astra &mdash; flagship</td></tr>
       <tr><td><code>gpt-5.6-sol</code></td><td>GPT 5.6 Sol</td></tr>
       <tr><td><code>gpt-5.6-terra</code></td><td>GPT 5.6 Terra</td></tr>
       <tr><td><code>gpt-5.6-luna</code></td><td>GPT 5.6 Luna</td></tr>
@@ -385,6 +386,11 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
       <tr>
         <td class="mname">Claude Mythos 5<small>claude-mythos-5</small></td>
         <td class="was">n/a<sup>9</sup></td><td class="was">n/a<sup>9</sup></td><td class="was">n/a<sup>9</sup></td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
+        <td class="mname">GPT 6 Astra<small>gpt-6-astra</small></td>
+        <td class="was">$10.00<sup>11</sup></td><td class="was">$50.00<sup>11</sup></td><td class="was">$1.00</td>
         <td class="fgcol free">$0</td>
       </tr>
       <tr>
@@ -497,7 +503,8 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     <sup>7</sup> Sources disagree on Grok 4.5's cache rate: some list $0.30, others $0.50. The $0.50 figure appears to be Grok 4.6's.<br>
     <sup>8</sup> Terra and Luna rates reflect OpenAI's 30 Jul 2026 cut. Long-context requests meter higher: Terra $4.00 / $18.00, Luna $0.40 / $1.80.<br>
     <sup>9</sup> Claude Mythos 5 has no public rate card. Anthropic's Mythos tier is not generally available; access runs through Project Glasswing with a small number of vetted organisations.<br>
-    <sup>10</sup> Fable 5.1 shipped 1 Sep 2026. Input and output match Fable 5; the cache read fell 75% to $0.25 &mdash; 2.5% of its input rate rather than the 10% most models charge, and half what Opus 5 charges to read cache.
+    <sup>10</sup> Fable 5.1 shipped 1 Sep 2026. Input and output match Fable 5; the cache read fell 75% to $0.25 &mdash; 2.5% of its input rate rather than the 10% most models charge, and half what Opus 5 charges to read cache.<br>
+    <sup>11</sup> GPT 6 Astra shipped 3 Sep 2026 and matches Fable 5.1's headline exactly, though its cache read is $1.00 against Fable's $0.25. Cache writes are $12.50. Batch and Flex halve these rates; Fast mode doubles them; prompts above 272K tokens reprice the whole request at 2&times; input and 1.5&times; output.
   </div>
 </section>
 
