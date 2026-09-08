@@ -178,7 +178,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">16 flagship models</span>
+      <span class="badge">16 text &middot; 6 video</span>
       <span class="badge">OpenAI-compatible</span>
       <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
       <span class="badge on">$0.00 / 1M tokens</span>
@@ -535,6 +535,9 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
       <tr><td><span class="meth get">GET</span></td><td><code>/v1/usage</code></td><td>Requests used and remaining today</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/v1/chat/completions</code></td><td>Chat completion (OpenAI format)</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/v1/messages</code></td><td>Chat completion (Anthropic format)</td></tr>
+      <tr><td><span class="meth get">GET</span></td><td><code>/v1/video/models</code></td><td>Video models available</td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/v1/video</code></td><td>Queue a generation, returns a job id</td></tr>
+      <tr><td><span class="meth get">GET</span></td><td><code>/v1/video/{id}</code></td><td>Poll a job</td></tr>
       <tr><td><span class="meth get">GET</span></td><td><code>/health</code></td><td>Service status &mdash; no key needed</td></tr>
     </tbody>
   </table>
@@ -590,6 +593,31 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     "messages": [{"role": "user", "content": "Count to five"}],
     "stream": true
   }'</span></code></pre>
+
+  <h3>Video</h3>
+  <p>Video generation runs on Hugging Face Spaces, and ForgeGrit does not own that GPU time. So video is the one thing here that needs a key of yours: create a free read token at <code>huggingface.co/settings/tokens</code> and send it as <code>X-HF-Token</code>. Jobs run on your own quota and the token is never stored.</p>
+  <p>Generation takes 30 seconds to a few minutes, so the endpoint is asynchronous &mdash; you get a job id back and poll it.</p>
+<pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/v1/video \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span> \
+  -H <span class="c-str">"X-HF-Token: hf_your_token"</span> \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{"model":"ltx-video-fast","prompt":"a fox walking through snow"}'</span></code></pre>
+  <p>Then poll until <code>status</code> is <code>done</code>:</p>
+<pre><button class="cp">copy</button><code>curl https://api-forgegrit.serveousercontent.com/v1/video/JOB_ID \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span></code></pre>
+
+  <table>
+    <thead><tr><th>Model</th><th>Audio</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>ltx-video-fast</code></td><td>&mdash;</td><td>Fastest; lowest quota cost per clip</td></tr>
+      <tr><td><code>ltx-2-turbo</code></td><td>yes</td><td>Fast, with a synchronised soundtrack</td></tr>
+      <tr><td><code>ltx-2-fast</code></td><td>yes</td><td>Official Lightricks distilled build</td></tr>
+      <tr><td><code>minimax-h3-turbo</code></td><td>yes</td><td>33B omni-modal; audio generated with the picture</td></tr>
+      <tr><td><code>ltx-2-3-studio</code></td><td>yes</td><td>Community Space</td></tr>
+      <tr><td><code>wan-2-2-fast</code></td><td>&mdash;</td><td>Image to video; needs an <code>image</code> input</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>Be considerate with Spaces.</b> These are demos run by their authors on shared hardware. Your token means your jobs draw on your allowance rather than theirs, but heavy automated use still affects everyone queueing behind you.</div>
 
   <h3>Health</h3>
 <pre><button class="cp">copy</button><code>curl https://api-forgegrit.serveousercontent.com/health</code></pre>
