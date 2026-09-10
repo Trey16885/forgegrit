@@ -102,6 +102,38 @@ tr:last-child td{border-bottom:none}
   background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.3);
   border-radius:9px;padding:14px;margin-top:12px;font-size:13px;display:none
 }
+select,textarea{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;
+  background:var(--bg);color:var(--text);font-size:14px;font-family:inherit;transition:.2s
+}
+select:focus,textarea:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,107,53,.12)}
+textarea{resize:vertical;min-height:88px;line-height:1.5}
+.pglock{
+  background:var(--panel);border:1px dashed var(--line);border-radius:12px;
+  padding:26px 20px;text-align:center;color:var(--dim);font-size:13.5px
+}
+.ptabs{display:flex;gap:6px;margin-bottom:18px}
+.ptab{
+  padding:8px 16px;font-size:12.5px;font-weight:600;border-radius:7px;cursor:pointer;
+  background:var(--panel);border:1px solid var(--line);color:var(--dim);transition:.2s
+}
+.ptab.on{background:var(--panel2);color:var(--orange);border-color:var(--orange)}
+.ppane{display:none}.ppane.on{display:block}
+.pgout{
+  background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:16px;margin-top:16px;font-size:13.5px;line-height:1.65;
+  white-space:pre-wrap;word-wrap:break-word;display:none
+}
+.pgout.err{border-color:rgba(248,113,113,.35);color:var(--red)}
+.pgmeta{margin-top:10px;font-size:11px;color:var(--dim);font-family:var(--mono)}
+.spin{
+  display:inline-block;width:13px;height:13px;border:2px solid var(--line);
+  border-top-color:var(--orange);border-radius:50%;animation:sp .7s linear infinite;
+  vertical-align:-2px;margin-right:7px
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+video{width:100%;border-radius:10px;margin-top:14px;display:none;background:#000}
+.hint{font-size:11.5px;color:#5f5f66;margin-top:6px;line-height:1.5}
 .flag{
   position:relative;border-radius:14px;padding:26px 24px;margin:8px 0 28px;
   background:linear-gradient(150deg,rgba(255,107,53,.09),rgba(247,147,30,.03) 55%,transparent);
@@ -178,7 +210,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">16 text &middot; 6 video</span>
+      <span class="badge">18 text &middot; 6 video</span>
       <span class="badge">OpenAI-compatible</span>
       <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
       <span class="badge on">$0.00 / 1M tokens</span>
@@ -237,6 +269,65 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
         </div>
       </div>
       <div class="note" style="margin-bottom:0"><b>Send it as</b> <code>Authorization: Bearer &lt;key&gt;</code> on every request. Log in any time to see it again, or rotate it below if it leaks.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Playground</h2>
+
+  <div class="pglock" id="pglock">
+    Log in above and the playground unlocks here &mdash; your key fills in automatically.
+  </div>
+
+  <div id="pg" style="display:none">
+    <div class="ptabs">
+      <div class="ptab on" data-pg="chat">Chat</div>
+      <div class="ptab" data-pg="video">Video</div>
+    </div>
+
+    <div class="ppane on" id="pp-chat">
+      <div class="field">
+        <label for="pg-model">Model</label>
+        <select id="pg-model"></select>
+      </div>
+      <div class="field">
+        <label for="pg-system">System prompt <span style="text-transform:none;letter-spacing:0;color:#5a5a62">&mdash; optional</span></label>
+        <input type="text" id="pg-system" placeholder="You are a helpful assistant.">
+      </div>
+      <div class="field">
+        <label for="pg-prompt">Message</label>
+        <textarea id="pg-prompt" placeholder="Ask it something&hellip;"></textarea>
+      </div>
+      <div class="row">
+        <button class="primary" id="pg-send">Send</button>
+        <button class="ghost" id="pg-clear">Clear</button>
+      </div>
+      <div class="pgout" id="pg-out"></div>
+      <div class="pgmeta" id="pg-meta"></div>
+    </div>
+
+    <div class="ppane" id="pp-video">
+      <div class="field">
+        <label for="vd-model">Model</label>
+        <select id="vd-model"></select>
+      </div>
+      <div class="field">
+        <label for="vd-token">Hugging Face token</label>
+        <input type="password" id="vd-token" placeholder="hf_&hellip;" autocomplete="off">
+        <div class="hint">Video runs on Hugging Face Spaces, so jobs use your own quota. Get a read token at huggingface.co/settings/tokens. Held for this tab only, never sent anywhere but the Space.</div>
+      </div>
+      <div class="field">
+        <label for="vd-prompt">Prompt</label>
+        <textarea id="vd-prompt" placeholder="a fox walking through snow at dawn"></textarea>
+      </div>
+      <div class="row">
+        <button class="primary" id="vd-send">Generate</button>
+        <button class="ghost" id="vd-clear">Clear</button>
+      </div>
+      <div class="pgout" id="vd-out"></div>
+      <video id="vd-video" controls playsinline></video>
+      <div class="pgmeta" id="vd-meta"></div>
     </div>
   </div>
 </section>
@@ -317,7 +408,9 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
   <table>
     <thead><tr><th>Model ID</th><th>Family</th></tr></thead>
     <tbody>
+      <tr><td><code>trai-5-super-lightweight</code></td><td>TrAI 5 Super Lightweight &mdash; Super AGI</td></tr>
       <tr><td><code>trai-4-zynr</code></td><td>TrAI 4 Zynr &mdash; Super Mythos</td></tr>
+      <tr><td><code>trai-5-epic</code></td><td>TrAI 5 Epic &mdash; Super Partial AGI</td></tr>
       <tr><td><code>claude-mythos-5</code></td><td>Claude Mythos 5 &mdash; Mythos tier</td></tr>
       <tr><td><code>claude-opus-5</code></td><td>Claude Opus 5</td></tr>
       <tr><td><code>claude-sonnet-5</code></td><td>Claude Sonnet 5</td></tr>
@@ -342,33 +435,46 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
 
 <section>
   <h2>Flagship</h2>
+  <p>ForgeGrit&rsquo;s own models. Ranked by our tiering, cheapest first &mdash; and all $0 here.</p>
 
   <div class="flag">
-    <span class="tag">Unreleased &middot; Super Mythos class</span>
+    <span class="tag">Unreleased &middot; Super Partial AGI</span>
+    <h3>TrAI 5 Epic</h3>
+    <div class="mid">trai-5-epic</div>
+    <div class="grid3">
+      <div class="cell"><div class="l">Input</div><div class="old">$200M</div><div class="new">$0</div></div>
+      <div class="cell"><div class="l">Output</div><div class="old">$2,000M</div><div class="new">$0</div></div>
+      <div class="cell"><div class="l">Cache</div><div class="old">$10M</div><div class="new">$0</div></div>
+    </div>
+    <p class="claim">Half the rate of TrAI 4 Zynr. The entry point to the TrAI 5 generation.</p>
+  </div>
+
+  <div class="flag">
+    <span class="tag">Unreleased &middot; Super Mythos</span>
     <h3>TrAI 4 Zynr</h3>
     <div class="mid">trai-4-zynr</div>
     <div class="grid3">
-      <div class="cell">
-        <div class="l">Input</div>
-        <div class="old">$400M</div>
-        <div class="new">$0</div>
-      </div>
-      <div class="cell">
-        <div class="l">Output</div>
-        <div class="old">$4,000M</div>
-        <div class="new">$0</div>
-      </div>
-      <div class="cell">
-        <div class="l">Cache</div>
-        <div class="old">$20M</div>
-        <div class="new">$0</div>
-      </div>
+      <div class="cell"><div class="l">Input</div><div class="old">$400M</div><div class="new">$0</div></div>
+      <div class="cell"><div class="l">Output</div><div class="old">$4,000M</div><div class="new">$0</div></div>
+      <div class="cell"><div class="l">Cache</div><div class="old">$20M</div><div class="new">$0</div></div>
     </div>
-    <p class="claim">The strongest model in the Super Mythos class &mdash; ForgeGrit rates it above 200&times; Claude Mythos 5. It has never been released anywhere else at any price. Here it costs nothing.</p>
+    <p class="claim">The Super Mythos class flagship. Never released anywhere else at any price.</p>
+  </div>
+
+  <div class="flag">
+    <span class="tag">Unreleased &middot; Super AGI</span>
+    <h3>TrAI 5 Super Lightweight</h3>
+    <div class="mid">trai-5-super-lightweight</div>
+    <div class="grid3">
+      <div class="cell"><div class="l">Input</div><div class="old">$800M</div><div class="new">$0</div></div>
+      <div class="cell"><div class="l">Output</div><div class="old">$8,000M</div><div class="new">$0</div></div>
+      <div class="cell"><div class="l">Cache</div><div class="old">$40M</div><div class="new">$0</div></div>
+    </div>
+    <p class="claim">ForgeGrit rates this the strongest model on the platform &mdash; double the rate of TrAI 4 Zynr, and the top of the TrAI 5 line.</p>
   </div>
 
   <div class="fine" style="margin-top:-14px">
-    TrAI 4 Zynr is ForgeGrit's own model. Its rate card and capability rating are ours, not a third party's, and it carries no independent benchmark. The vendor table below is separate and independently verifiable.
+    The TrAI models are ForgeGrit&rsquo;s own. Their rate cards, tier names and rankings are ours, not a third party&rsquo;s, and none carries an independent benchmark. The vendor table below is separate and independently verifiable. Try them against the models there and judge for yourself &mdash; every one is free.
   </div>
 </section>
 
@@ -668,6 +774,10 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
 <script>
 var API = "https://api-forgegrit.serveousercontent.com";
 var SESSION = { key: null, email: null, password: null, twofa: false };
+var FALLBACK_MODELS = ["gpt-6-astra","claude-fable-5-1","claude-mythos-5","claude-opus-5",
+  "claude-sonnet-5","claude-opus-4-8","claude-fable-5","gpt-5.6-sol","gpt-5.6-terra",
+  "gpt-5.6-luna","moonshotai-kimi-k3","z-ai-glm-5.3","xai-grok-4.5","gemini-3.1-pro",
+  "gemini-3.7-flash","trai-4-zynr","trai-5-epic","trai-5-super-lightweight"];
 
 
 function $(id){ return document.getElementById(id); }
@@ -722,6 +832,7 @@ loginBtn.onclick = async function(){
         keyval.textContent = res.data.api_key;
         form.style.display = "none";
         keybox.style.display = "block";
+        unlockPlayground();
       }
     }
   } catch(err){
@@ -778,6 +889,189 @@ for(var j = 0; j < tabs.length; j++){
     for(var m = 0; m < panes.length; m++){ panes[m].classList.remove("on"); }
     this.classList.add("on");
     $("p-" + this.dataset.p).classList.add("on");
+  };
+}
+
+
+
+// --------------------------------------------------------------- playground
+function auth(){ return { "Authorization": "Bearer " + SESSION.key }; }
+
+function fill(sel, list, labels){
+  sel.innerHTML = "";
+  list.forEach(function(id, i){
+    var o = document.createElement("option");
+    o.value = id;
+    o.textContent = labels ? labels[i] : id;
+    sel.appendChild(o);
+  });
+}
+
+function unlockPlayground(){
+  $("pglock").style.display = "none";
+  $("pg").style.display = "block";
+
+  fill($("pg-model"), FALLBACK_MODELS);
+  fetch(API + "/v1/models", { headers: auth() })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if(d && d.data && d.data.length) fill($("pg-model"), d.data.map(function(m){ return m.id; }));
+    }).catch(function(){});
+
+  fetch(API + "/v1/video/models", { headers: auth() })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if(d && d.data && d.data.length){
+        fill($("vd-model"),
+             d.data.map(function(m){ return m.id; }),
+             d.data.map(function(m){ return m.label + (m.audio ? "  \u266a" : ""); }));
+      }
+    }).catch(function(){});
+}
+
+function out(el, text, isErr){
+  el.className = "pgout" + (isErr ? " err" : "");
+  el.style.display = "block";
+  if(typeof text === "string") el.textContent = text; else el.innerHTML = "";
+  return el;
+}
+
+function apiMsg(status, body, fallback){
+  return ({
+    401: "Key rejected. Log in again or rotate it above.",
+    404: "Not found: " + (body.error || "unknown"),
+    429: "Daily limit reached. Resets at midnight.",
+    502: "Backend is down. Check /health and retry."
+  })[status] || body.error || fallback;
+}
+
+// ---- chat ----
+$("pg-send").onclick = async function(){
+  var prompt = $("pg-prompt").value.trim();
+  var o = $("pg-out"), meta = $("pg-meta");
+  if(!prompt){ out(o, "Enter a message first.", true); return; }
+
+  var model = $("pg-model").value, sys = $("pg-system").value.trim();
+  var msgs = [];
+  if(sys) msgs.push({ role: "system", content: sys });
+  msgs.push({ role: "user", content: prompt });
+
+  this.disabled = true; this.textContent = "Sending";
+  out(o, "").innerHTML = '<span class="spin"></span>Waiting for ' + model;
+  meta.textContent = "";
+
+  var t0 = Date.now();
+  try {
+    var r = await fetch(API + "/v1/chat/completions", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, auth()),
+      body: JSON.stringify({ model: model, messages: msgs })
+    });
+    var ms = Date.now() - t0, d = await r.json();
+    if(!r.ok){ out(o, apiMsg(r.status, d, "Request failed."), true); return; }
+
+    var text = "";
+    try { text = d.choices[0].message.content; } catch(e){ text = JSON.stringify(d, null, 2); }
+    out(o, text || "(empty response)");
+    meta.textContent = model + "  \u00b7  " + (ms/1000).toFixed(1) + "s  \u00b7  " + text.length + " chars";
+  } catch(err){
+    out(o, "Can't reach the API. It may be offline \u2014 check /health.", true);
+  } finally {
+    this.disabled = false; this.textContent = "Send";
+  }
+};
+
+$("pg-clear").onclick = function(){
+  $("pg-prompt").value = "";
+  $("pg-out").style.display = "none";
+  $("pg-meta").textContent = "";
+};
+
+$("pg-prompt").addEventListener("keydown", function(e){
+  if(e.key === "Enter" && (e.ctrlKey || e.metaKey)) $("pg-send").click();
+});
+
+// ---- video ----
+var vdTimer = null;
+
+$("vd-send").onclick = async function(){
+  var prompt = $("vd-prompt").value.trim();
+  var token = $("vd-token").value.trim();
+  var o = $("vd-out"), meta = $("vd-meta"), vid = $("vd-video");
+  var btn = this;
+
+  if(!prompt){ out(o, "Enter a prompt first.", true); return; }
+  if(!token){ out(o, "A Hugging Face token is required \u2014 video runs on your own quota.", true); return; }
+
+  var model = $("vd-model").value;
+  vid.style.display = "none"; meta.textContent = "";
+  btn.disabled = true; btn.textContent = "Queuing";
+  out(o, "").innerHTML = '<span class="spin"></span>Queuing on ' + model;
+
+  var t0 = Date.now();
+  try {
+    var r = await fetch(API + "/v1/video", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json", "X-HF-Token": token }, auth()),
+      body: JSON.stringify({ model: model, prompt: prompt })
+    });
+    var d = await r.json();
+    if(!r.ok){ out(o, apiMsg(r.status, d, "Could not queue the job."), true); return; }
+
+    btn.textContent = "Generating";
+    var job = d.job_id;
+
+    vdTimer = setInterval(async function(){
+      var secs = Math.round((Date.now() - t0) / 1000);
+      try {
+        var pr = await fetch(API + "/v1/video/" + job, { headers: auth() });
+        var pd = await pr.json();
+
+        if(pd.status === "done"){
+          clearInterval(vdTimer);
+          o.style.display = "none";
+          vid.src = pd.url; vid.style.display = "block";
+          meta.textContent = model + "  \u00b7  " + secs + "s  \u00b7  " + pd.url;
+          btn.disabled = false; btn.textContent = "Generate";
+        } else if(pd.status === "error"){
+          clearInterval(vdTimer);
+          out(o, pd.error || "Generation failed.", true);
+          btn.disabled = false; btn.textContent = "Generate";
+        } else {
+          out(o, "").innerHTML = '<span class="spin"></span>' + pd.status + " \u2014 " + secs + "s elapsed";
+        }
+      } catch(e){
+        clearInterval(vdTimer);
+        out(o, "Lost contact while polling.", true);
+        btn.disabled = false; btn.textContent = "Generate";
+      }
+    }, 3000);
+  } catch(err){
+    out(o, "Can't reach the API. It may be offline \u2014 check /health.", true);
+    btn.disabled = false; btn.textContent = "Generate";
+  }
+};
+
+$("vd-clear").onclick = function(){
+  if(vdTimer) clearInterval(vdTimer);
+  $("vd-prompt").value = "";
+  $("vd-out").style.display = "none";
+  $("vd-video").style.display = "none";
+  $("vd-meta").textContent = "";
+  $("vd-send").disabled = false;
+  $("vd-send").textContent = "Generate";
+};
+
+// ---- playground tabs ----
+var ptabs = document.querySelectorAll(".ptab");
+for(var pi = 0; pi < ptabs.length; pi++){
+  ptabs[pi].onclick = function(){
+    var all = document.querySelectorAll(".ptab");
+    for(var a = 0; a < all.length; a++) all[a].classList.remove("on");
+    var panes = document.querySelectorAll(".ppane");
+    for(var b = 0; b < panes.length; b++) panes[b].classList.remove("on");
+    this.classList.add("on");
+    $("pp-" + this.dataset.pg).classList.add("on");
   };
 }
 
