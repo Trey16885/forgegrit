@@ -210,7 +210,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">18 text &middot; 6 video</span>
+      <span class="badge">18 text &middot; 6 video &middot; 1 free video/day</span>
       <span class="badge">OpenAI-compatible</span>
       <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
       <span class="badge on">$0.00 / 1M tokens</span>
@@ -701,7 +701,14 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
   }'</span></code></pre>
 
   <h3>Video</h3>
-  <p>Video generation runs on Hugging Face Spaces, and ForgeGrit does not own that GPU time. So video is the one thing here that needs a key of yours: create a free read token at <code>huggingface.co/settings/tokens</code> and send it as <code>X-HF-Token</code>. Jobs run on your own quota and the token is never stored.</p>
+  <p>Video generation runs on Hugging Face Spaces, and ForgeGrit does not own that GPU time.</p>
+  <p><b>You get one free video a day</b> with no token at all, on <code>ltx-video-fast</code>, drawn from ForgeGrit&rsquo;s own quota. Past that, bring a token: create a free read token at <code>huggingface.co/settings/tokens</code> and send it as <code>X-HF-Token</code>. Then it is unlimited, any model, on your quota &mdash; and the token is never stored.</p>
+<pre><button class="cp">copy</button><code><span class="c-cm"># free — no token</span>
+curl -X POST https://api-forgegrit.serveousercontent.com/v1/video \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span> \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -d <span class="c-str">'{"model":"ltx-video-fast","prompt":"a fox in snow"}'</span></code></pre>
+  <p>Check what you have left with <code>GET /v1/video/models</code> &mdash; the <code>free_tier</code> block reports your remaining videos for the day. A failed generation is refunded, so a broken job never costs you your free one.</p>
   <p>Generation takes 30 seconds to a few minutes, so the endpoint is asynchronous &mdash; you get a job id back and poll it.</p>
 <pre><button class="cp">copy</button><code>curl -X POST https://api-forgegrit.serveousercontent.com/v1/video \
   -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span> \
@@ -715,7 +722,7 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
   <table>
     <thead><tr><th>Model</th><th>Audio</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td><code>ltx-video-fast</code></td><td>&mdash;</td><td>Fastest; lowest quota cost per clip</td></tr>
+      <tr><td><code>ltx-video-fast</code></td><td>&mdash;</td><td>Fastest; lowest quota cost. <b>The free-tier model</b></td></tr>
       <tr><td><code>ltx-2-turbo</code></td><td>yes</td><td>Fast, with a synchronised soundtrack</td></tr>
       <tr><td><code>ltx-2-fast</code></td><td>yes</td><td>Official Lightricks distilled build</td></tr>
       <tr><td><code>minimax-h3-turbo</code></td><td>yes</td><td>33B omni-modal; audio generated with the picture</td></tr>
