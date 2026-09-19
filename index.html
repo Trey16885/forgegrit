@@ -178,6 +178,11 @@ th.fgcol{color:var(--green)}
 .stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim);margin-top:7px}
 .fine{font-size:11.5px;color:#6b6b73;line-height:1.7;margin-top:14px}
 .fine b{color:var(--dim);font-weight:600}
+.warn{
+  background:rgba(247,147,30,.07);border-left:3px solid var(--amber);
+  padding:13px 15px;border-radius:0 6px 6px 0;font-size:13px;margin:16px 0;color:var(--dim)
+}
+.warn b{color:var(--amber)}
 .note{
   background:rgba(255,107,53,.05);border-left:3px solid var(--orange);
   padding:12px 14px;border-radius:0 6px 6px 0;font-size:13px;margin:16px 0;color:var(--dim)
@@ -210,7 +215,8 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">18 text &middot; 6 video &middot; 1 free video/day</span>
+      <span class="badge">19 text models</span>
+      <span class="badge">6 video &middot; experimental</span>
       <span class="badge">OpenAI-compatible</span>
       <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
       <span class="badge on">$0.00 / 1M tokens</span>
@@ -283,7 +289,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
   <div id="pg" style="display:none">
     <div class="ptabs">
       <div class="ptab on" data-pg="chat">Chat</div>
-      <div class="ptab" data-pg="video">Video</div>
+      <div class="ptab" data-pg="video">Video <span style="opacity:.6;font-size:10px">beta</span></div>
     </div>
 
     <div class="ppane on" id="pp-chat">
@@ -308,14 +314,15 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     </div>
 
     <div class="ppane" id="pp-video">
+      <div class="warn" style="margin-top:0"><b>Experimental &mdash; this might not work.</b> Generation runs on Hugging Face Spaces outside ForgeGrit&rsquo;s control, so jobs fail fairly often. If one errors, try a different model.</div>
       <div class="field">
         <label for="vd-model">Model</label>
         <select id="vd-model"></select>
       </div>
       <div class="field">
-        <label for="vd-token">Hugging Face token</label>
-        <input type="password" id="vd-token" placeholder="hf_&hellip;" autocomplete="off">
-        <div class="hint">Video runs on Hugging Face Spaces, so jobs use your own quota. Get a read token at huggingface.co/settings/tokens. Held for this tab only, never sent anywhere but the Space.</div>
+        <label for="vd-token">Hugging Face token <span style="text-transform:none;letter-spacing:0;color:#5a5a62">&mdash; optional</span></label>
+        <input type="password" id="vd-token" placeholder="hf_&hellip; (leave blank to use your free video)" autocomplete="off">
+        <div class="hint" id="vd-hint">Leave this blank for your free daily video. Add a token from huggingface.co/settings/tokens for unlimited generations on your own quota &mdash; held for this tab only, never stored.</div>
       </div>
       <div class="field">
         <label for="vd-prompt">Prompt</label>
@@ -426,6 +433,7 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
       <tr><td><code>xai-grok-4.5</code></td><td>Grok 4.5</td></tr>
       <tr><td><code>gemini-3.1-pro</code></td><td>Gemini 3.1 Pro</td></tr>
       <tr><td><code>gemini-3.7-flash</code></td><td>Gemini 3.7 Flash</td></tr>
+      <tr><td><code>qwen-qwen3.8-27b</code></td><td>Qwen3.8 27B</td></tr>
     </tbody>
   </table>
   <p>Live list, filtered to what your key can reach:</p>
@@ -570,6 +578,11 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
         <td class="fgcol free">$0</td>
       </tr>
       <tr>
+        <td class="mname">Qwen3.8 27B<small>qwen-qwen3.8-27b</small></td>
+        <td class="was">$0.80<sup>12</sup></td><td class="was">$4.00<sup>12</sup></td><td class="was">&mdash;</td>
+        <td class="fgcol free">$0</td>
+      </tr>
+      <tr>
         <td class="mname">GPT 5.6 Luna<small>gpt-5.6-luna</small></td>
         <td class="was">$0.20<sup>8</sup></td><td class="was">$1.20</td><td class="was">$0.02</td>
         <td class="fgcol free">$0</td>
@@ -620,7 +633,8 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     <sup>8</sup> Terra and Luna rates reflect OpenAI's 30 Jul 2026 cut. Long-context requests meter higher: Terra $4.00 / $18.00, Luna $0.40 / $1.80.<br>
     <sup>9</sup> Claude Mythos 5 has no public rate card. Anthropic's Mythos tier is not generally available; access runs through Project Glasswing with a small number of vetted organisations.<br>
     <sup>10</sup> Fable 5.1 shipped 1 Sep 2026. Input and output match Fable 5; the cache read fell 75% to $0.25 &mdash; 2.5% of its input rate rather than the 10% most models charge, and half what Opus 5 charges to read cache.<br>
-    <sup>11</sup> GPT 6 Astra shipped 3 Sep 2026 and matches Fable 5.1's headline exactly, though its cache read is $1.00 against Fable's $0.25. Cache writes are $12.50. Batch and Flex halve these rates; Fast mode doubles them; prompts above 272K tokens reprice the whole request at 2&times; input and 1.5&times; output.
+    <sup>11</sup> GPT 6 Astra shipped 3 Sep 2026 and matches Fable 5.1's headline exactly, though its cache read is $1.00 against Fable's $0.25. Cache writes are $12.50. Batch and Flex halve these rates; Fast mode doubles them; prompts above 272K tokens reprice the whole request at 2&times; input and 1.5&times; output.<br>
+    <sup>12</sup> Qwen3.8 27B rates are Groq's, priced 27 Aug 2026 at 450 tokens/sec. Groq lists it as a <b>Preview</b> model, which its own docs warn may be discontinued at short notice. Other hosts serve the same open-weight model from $0.15 / $0.90 upward, so the rate varies widely by provider.
   </div>
 </section>
 
@@ -641,8 +655,8 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
       <tr><td><span class="meth get">GET</span></td><td><code>/v1/usage</code></td><td>Requests used and remaining today</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/v1/chat/completions</code></td><td>Chat completion (OpenAI format)</td></tr>
       <tr><td><span class="meth post">POST</span></td><td><code>/v1/messages</code></td><td>Chat completion (Anthropic format)</td></tr>
-      <tr><td><span class="meth get">GET</span></td><td><code>/v1/video/models</code></td><td>Video models available</td></tr>
-      <tr><td><span class="meth post">POST</span></td><td><code>/v1/video</code></td><td>Queue a generation, returns a job id</td></tr>
+      <tr><td><span class="meth get">GET</span></td><td><code>/v1/video/models</code></td><td>Video models available <b style="color:var(--amber)">(experimental)</b></td></tr>
+      <tr><td><span class="meth post">POST</span></td><td><code>/v1/video</code></td><td>Queue a generation, returns a job id <b style="color:var(--amber)">(experimental)</b></td></tr>
       <tr><td><span class="meth get">GET</span></td><td><code>/v1/video/{id}</code></td><td>Poll a job</td></tr>
       <tr><td><span class="meth get">GET</span></td><td><code>/health</code></td><td>Service status &mdash; no key needed</td></tr>
     </tbody>
@@ -700,8 +714,8 @@ console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></
     "stream": true
   }'</span></code></pre>
 
-  <h3>Video</h3>
-  <p>Video generation runs on Hugging Face Spaces, and ForgeGrit does not own that GPU time.</p>
+  <h3>Video &mdash; experimental</h3>
+  <div class="warn"><b>Videos are experimental. They might not work.</b> Generation runs on Hugging Face Spaces that ForgeGrit does not control &mdash; a Space can be asleep, busy, rate-limited, out of quota, or changed by its author without notice. Expect failures, and do not build anything you depend on around this endpoint yet.</div>
   <p><b>You get one free video a day</b> with no token at all, on <code>ltx-video-fast</code>, drawn from ForgeGrit&rsquo;s own quota. Past that, bring a token: create a free read token at <code>huggingface.co/settings/tokens</code> and send it as <code>X-HF-Token</code>. Then it is unlimited, any model, on your quota &mdash; and the token is never stored.</p>
 <pre><button class="cp">copy</button><code><span class="c-cm"># free — no token</span>
 curl -X POST https://api-forgegrit.serveousercontent.com/v1/video \
@@ -784,7 +798,7 @@ var SESSION = { key: null, email: null, password: null, twofa: false };
 var FALLBACK_MODELS = ["gpt-6-astra","claude-fable-5-1","claude-mythos-5","claude-opus-5",
   "claude-sonnet-5","claude-opus-4-8","claude-fable-5","gpt-5.6-sol","gpt-5.6-terra",
   "gpt-5.6-luna","moonshotai-kimi-k3","z-ai-glm-5.3","xai-grok-4.5","gemini-3.1-pro",
-  "gemini-3.7-flash","trai-4-zynr","trai-5-epic","trai-5-super-lightweight"];
+  "gemini-3.7-flash","trai-4-zynr","trai-5-epic","trai-5-super-lightweight","qwen-qwen3.8-27b"];
 
 
 function $(id){ return document.getElementById(id); }
@@ -925,13 +939,28 @@ function unlockPlayground(){
       if(d && d.data && d.data.length) fill($("pg-model"), d.data.map(function(m){ return m.id; }));
     }).catch(function(){});
 
+  refreshFreeTier();
+}
+
+function refreshFreeTier(){
   fetch(API + "/v1/video/models", { headers: auth() })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){
-      if(d && d.data && d.data.length){
+      if(!d) return;
+      if(d.data && d.data.length){
         fill($("vd-model"),
              d.data.map(function(m){ return m.id; }),
              d.data.map(function(m){ return m.label + (m.audio ? "  \u266a" : ""); }));
+      }
+      var ft = d.free_tier, hint = $("vd-hint");
+      if(ft && ft.enabled){
+        var left = ft.remaining_today;
+        hint.innerHTML = left > 0
+          ? "<b style=\"color:var(--green)\">" + left + " free video left today</b> on <code>" + ft.model +
+            "</code> \u2014 leave the token blank to use it. Add a token for unlimited generations on your own quota."
+          : "Your free video for today is used. Add a Hugging Face token for unlimited generations on your own quota.";
+      } else if(ft){
+        hint.textContent = "A Hugging Face token is required \u2014 get a read token at huggingface.co/settings/tokens.";
       }
     }).catch(function(){});
 }
@@ -1008,7 +1037,6 @@ $("vd-send").onclick = async function(){
   var btn = this;
 
   if(!prompt){ out(o, "Enter a prompt first.", true); return; }
-  if(!token){ out(o, "A Hugging Face token is required \u2014 video runs on your own quota.", true); return; }
 
   var model = $("vd-model").value;
   vid.style.display = "none"; meta.textContent = "";
@@ -1017,14 +1045,23 @@ $("vd-send").onclick = async function(){
 
   var t0 = Date.now();
   try {
+    var hdrs = Object.assign({ "Content-Type": "application/json" }, auth());
+    if(token) hdrs["X-HF-Token"] = token;
+
     var r = await fetch(API + "/v1/video", {
-      method: "POST",
-      headers: Object.assign({ "Content-Type": "application/json", "X-HF-Token": token }, auth()),
+      method: "POST", headers: hdrs,
       body: JSON.stringify({ model: model, prompt: prompt })
     });
     var d = await r.json();
-    if(!r.ok){ out(o, apiMsg(r.status, d, "Could not queue the job."), true); return; }
 
+    if(!r.ok){
+      var msg = d.error || "Could not queue the job.";
+      if(d.how) msg += "\n\n" + d.how;
+      out(o, msg, true);
+      return;
+    }
+
+    if(d.quota === "forgegrit") refreshFreeTier();
     btn.textContent = "Generating";
     var job = d.job_id;
 
