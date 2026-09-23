@@ -1004,12 +1004,26 @@ $("pg-send").onclick = async function(){
 
   var t0 = Date.now();
   try {
-    var r = await fetch(API + "/v1/chat/completions", {
+    var req = {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, auth()),
       body: JSON.stringify({ model: model, messages: msgs })
-    });
-    var ms = Date.now() - t0, d = await r.json();
+    };
+    var r = await fetch(API + "/v1/chat/completions", req);
+    // Serveo occasionally returns an empty 502 for a moment; one retry clears it.
+    if(r.status === 502 && r.headers.get("content-length") === "0"){
+      out(o, "").innerHTML = '<span class="spin"></span>Tunnel hiccup, retrying\u2026';
+      await new Promise(function(res){ setTimeout(res, 1500); });
+      r = await fetch(API + "/v1/chat/completions", req);
+    }
+    var ms = Date.now() - t0, raw = await r.text(), d;
+    try { d = JSON.parse(raw); }
+    catch(e){
+      out(o, "The tunnel answered with HTTP " + r.status + " but not JSON" +
+             (ms > 25000 ? " after " + (ms/1000).toFixed(0) + "s \u2014 likely a tunnel timeout on a slow model. Try a smaller model." : ".") +
+             "\n\n" + raw.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200), true);
+      return;
+    }
     if(!r.ok){ out(o, apiMsg(r.status, d, "Request failed."), true); return; }
 
     var text = "";
@@ -1017,7 +1031,8 @@ $("pg-send").onclick = async function(){
     out(o, text || "(empty response)");
     meta.textContent = model + "  \u00b7  " + (ms/1000).toFixed(1) + "s  \u00b7  " + text.length + " chars";
   } catch(err){
-    out(o, "Can't reach the API. It may be offline \u2014 check /health.", true);
+    out(o, "No response from the API after " + ((Date.now() - t0)/1000).toFixed(0) +
+           "s (" + err.message + "). The tunnel is probably down \u2014 check /health.", true);
   } finally {
     this.disabled = false; this.textContent = "Send";
   }
