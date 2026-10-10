@@ -79,6 +79,7 @@ p code,td code,li code{background:var(--panel2);padding:2px 6px;border-radius:4p
 }
 .cp:hover{color:var(--orange);border-color:var(--orange)}
 .c-key{color:#7dd3fc}.c-str{color:#a3e635}.c-fn{color:var(--amber)}
+.c-com{color:var(--dim, #8a8a92)}
 
 table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
 th{
@@ -409,6 +410,31 @@ r = client.chat.completions.<span class="c-fn">create</span>(
 <span class="c-key">const</span> data = <span class="c-key">await</span> res.<span class="c-fn">json</span>();
 console.<span class="c-fn">log</span>(data.choices[0].message.content);</code></pre>
   </div>
+</section>
+
+<section>
+  <h2>Command line</h2>
+  <p>Chat with every ForgeGrit model from your terminal. Works anywhere Python 3.8+ runs, including Termux.</p>
+<pre><button class="cp">copy</button><code>pip install forgegrit-cli</code></pre>
+
+  <p>Sign in &mdash; pick one:</p>
+<pre><button class="cp">copy</button><code>forgegrit login              <span class="c-com"># your ForgeGrit email + password (2FA supported)</span>
+forgegrit register           <span class="c-com"># create a new ForgeGrit account</span>
+forgegrit api YOUR_KEY       <span class="c-com"># use an API key you already have</span></code></pre>
+
+  <p>Then use it:</p>
+<pre><button class="cp">copy</button><code>forgegrit chat                       <span class="c-com"># interactive chat, replies stream in</span>
+forgegrit chat -m claude-sonnet-5-5  <span class="c-com"># pick a model</span>
+forgegrit ask <span class="c-str">"explain recursion"</span>    <span class="c-com"># one-shot question</span>
+cat notes.txt | forgegrit ask        <span class="c-com"># pipe text in</span>
+forgegrit models                     <span class="c-com"># list models</span>
+forgegrit model claude-opus-5        <span class="c-com"># set your default model</span>
+forgegrit usage                      <span class="c-com"># requests used today</span>
+forgegrit whoami                     <span class="c-com"># show the saved login</span>
+forgegrit logout                     <span class="c-com"># forget the saved key</span></code></pre>
+
+  <p>Inside <code>chat</code>: <code>/model ID</code>, <code>/system TEXT</code>, <code>/clear</code>, <code>/help</code>, <code>/exit</code>. Your key is saved to <code>~/.forgegrit/config.json</code>, readable only by you. Set <code>FORGEGRIT_API_KEY</code> to override it, or <code>NO_COLOR=1</code> to turn off colours. Chats sent through the CLI are logged like any other request.</p>
+  <p><a href="https://pypi.org/project/forgegrit-cli/" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none">forgegrit-cli on PyPI &rarr;</a></p>
 </section>
 
 <section>
