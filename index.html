@@ -109,6 +109,20 @@ select,textarea{
 }
 select:focus,textarea:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,107,53,.12)}
 textarea{resize:vertical;min-height:88px;line-height:1.5}
+.fi{
+  background:linear-gradient(180deg,rgba(255,107,53,.07),transparent 70%);
+  border:1px solid rgba(255,107,53,.35);border-radius:14px;padding:22px 20px
+}
+.fi .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--orange);border:1px solid rgba(255,107,53,.4);
+  border-radius:99px;padding:3px 10px;margin-bottom:12px}
+.fi .lead{font-size:16px;color:var(--text);line-height:1.6}
+.vid{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;
+  border:1px solid var(--line);background:#000;margin:18px 0}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.fistate{font-size:13px;margin-top:12px;padding:10px 12px;border-radius:8px;
+  background:var(--panel2);border:1px solid var(--line);color:var(--dim)}
+.fistate b.on{color:var(--green)} .fistate b.wait{color:var(--amber)}
 .pglock{
   background:var(--panel);border:1px dashed var(--line);border-radius:12px;
   padding:26px 20px;text-align:center;color:var(--dim);font-size:13.5px
@@ -216,7 +230,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
     <div class="sub">Frontier models. Zero cost. No bullshit.</div>
     <div class="badges">
       <span class="badge on">100,000 req/day</span>
-      <span class="badge">26 text models</span>
+      <span class="badge">27 text models</span>
       <span class="badge">6 video &middot; experimental</span>
       <span class="badge">OpenAI-compatible</span>
       <span class="badge">$0 in &middot; $0 out &middot; $0 cache</span>
@@ -342,6 +356,51 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
   </div>
 </section>
 
+
+<section id="frominsidge">
+  <h2>Project Frominsidge</h2>
+  <div class="fi">
+    <span class="tag">Approval required</span>
+    <p class="lead">ForgeGrit has agentic models. They&rsquo;re more than just agentic, though &mdash; they&rsquo;re a risk.</p>
+    <p>Project Frominsidge is a ForgeGrit project that lets you access the best models, but we have to accept you first, because these models are risky. Project Frominsidge will allow you to be powerful.</p>
+    <p>It&rsquo;s meant for coding, and it has extra guardrails: every Frominsidge conversation starts with rules that keep the model on software work, block malware and exploits, keep secrets out of its replies, rule out <code>sudo</code>, and make it ask before anything destructive.</p>
+
+    <div class="vid">
+      <iframe src="https://www.youtube-nocookie.com/embed/PpjH6nkIwTE" title="Project Frominsidge"
+        loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+    <table>
+      <thead><tr><th>Model ID</th><th>Family</th></tr></thead>
+      <tbody>
+        <tr><td><code>claude-mythos-5-1</code></td><td>Claude Mythos 5.1</td></tr>
+        <tr><td><code>gemini-4-argon</code></td><td>Gemini 4 Argon</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:22px">Enroll</h3>
+    <div class="pglock" id="filock">Log in above to enroll &mdash; your API key is all it takes. No password or 2FA.</div>
+    <div id="fiform" style="display:none">
+      <div class="field">
+        <label for="fi-reason">Why do you want to join?</label>
+        <textarea id="fi-reason" maxlength="1000" placeholder="What you're building and what you'd use these models for&hellip;"></textarea>
+      </div>
+      <button class="primary" id="fi-enroll">Enroll</button>
+    </div>
+    <div class="fistate" id="fistate" style="display:none"></div>
+    <p class="hint" style="margin-top:14px">New enrollments start <b>inactive</b>. Once you&rsquo;re approved, your existing key reaches <code>/v1/frominsidge/models</code> and the models above. Chats are logged like every other request.</p>
+
+<pre><button class="cp">copy</button><code><span class="c-com"># check your access</span>
+curl https://api-forgegrit.serveousercontent.com/v1/frominsidge/status \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span>
+
+<span class="c-com"># once active</span>
+curl https://api-forgegrit.serveousercontent.com/v1/frominsidge/models \
+  -H <span class="c-str">"Authorization: Bearer YOUR_KEY"</span></code></pre>
+  </div>
+</section>
+
 <section>
   <h2>Quickstart</h2>
   <p>Base URL:</p>
@@ -425,6 +484,9 @@ forgegrit api YOUR_KEY       <span class="c-com"># use an API key you already ha
   <p>Then use it:</p>
 <pre><button class="cp">copy</button><code>forgegrit chat                       <span class="c-com"># interactive chat, replies stream in</span>
 forgegrit chat -m claude-sonnet-5-5  <span class="c-com"># pick a model</span>
+forgegrit chat -r                    <span class="c-com"># resume your latest conversation</span>
+forgegrit sessions                   <span class="c-com"># list saved conversations</span>
+forgegrit frominsidge                <span class="c-com"># Project Frominsidge status / enroll</span>
 forgegrit ask <span class="c-str">"explain recursion"</span>    <span class="c-com"># one-shot question</span>
 cat notes.txt | forgegrit ask        <span class="c-com"># pipe text in</span>
 forgegrit models                     <span class="c-com"># list models</span>
@@ -433,7 +495,8 @@ forgegrit usage                      <span class="c-com"># requests used today</
 forgegrit whoami                     <span class="c-com"># show the saved login</span>
 forgegrit logout                     <span class="c-com"># forget the saved key</span></code></pre>
 
-  <p>Inside <code>chat</code>: <code>/model ID</code>, <code>/system TEXT</code>, <code>/clear</code>, <code>/help</code>, <code>/exit</code>. Your key is saved to <code>~/.forgegrit/config.json</code>, readable only by you. Set <code>FORGEGRIT_API_KEY</code> to override it, or <code>NO_COLOR=1</code> to turn off colours. Chats sent through the CLI are logged like any other request.</p>
+  <p><b>The model can run commands.</b> In <code>chat</code> it can run shell commands on your machine, as you, in the folder you started from &mdash; you approve each one (<code>y</code> / <code>n</code> / <code>a</code> for the rest of the session). <code>sudo</code>, <code>su</code> and <code>doas</code> are always refused. Use <code>--no-commands</code> or <code>/commands off</code> to switch it off.</p>
+  <p>Inside <code>chat</code>: <code>/model ID</code>, <code>/system TEXT</code>, <code>/clear</code>, <code>/resume [N]</code>, <code>/forget [N]</code>, <code>/commands on|off</code>, <code>/help</code>, <code>/exit</code>. Conversations are saved to <code>~/.forgegrit/sessions/</code>. Your key is saved to <code>~/.forgegrit/config.json</code>, readable only by you. Set <code>FORGEGRIT_API_KEY</code> to override it, or <code>NO_COLOR=1</code> to turn off colours. Chats sent through the CLI are logged like any other request.</p>
   <p><a href="https://pypi.org/project/forgegrit-cli/" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none">forgegrit-cli on PyPI &rarr;</a></p>
 </section>
 
@@ -465,10 +528,11 @@ forgegrit logout                     <span class="c-com"># forget the saved key<
       <tr><td><code>xai-grok-4.5</code></td><td>Grok 4.5</td></tr>
       <tr><td><code>gemini-3.1-pro</code></td><td>Gemini 3.1 Pro</td></tr>
       <tr><td><code>gemini-3.7-flash</code></td><td>Gemini 3.7 Flash</td></tr>
+      <tr><td><code>gemini-3.8-flash</code></td><td>Gemini 3.8 Flash</td></tr>
+      <tr><td><code>gemma-4-31b-it</code></td><td>Gemma 4 31B IT &mdash; thinking on</td></tr>
+      <tr><td><code>qwen-3.8-max</code></td><td>Qwen 3.8 Max &mdash; 2.4T total, 95B active</td></tr>
       <tr><td><code>qwen-qwen3.8-27b</code></td><td>Qwen3.8 27B</td></tr>
       <tr><td><code>deepseek-v4.1-flash</code></td><td>DeepSeek V4.1 Flash</td></tr>
-      <tr><td><code>llama-90b-vision</code></td><td>Llama 3.2 90B Vision Instruct &mdash; accepts images</td></tr>
-      <tr><td><code>llama-3.2-11b-vision-instruct</code></td><td>Llama 3.2 11B Vision Instruct &mdash; accepts images</td></tr>
     </tbody>
   </table>
   <p>Live list, filtered to what your key can reach:</p>
@@ -829,7 +893,7 @@ var SESSION = { key: null, email: null, password: null, twofa: false };
 var FALLBACK_MODELS = ["gpt-6-astra","claude-fable-5-1","claude-opus-5",
   "claude-sonnet-5","claude-opus-4-8","claude-fable-5","gpt-5.6-sol","gpt-5.6-terra",
   "gpt-5.6-luna","moonshotai-kimi-k3","z-ai-glm-5.3","xai-grok-4.5","gemini-3.1-pro",
-  "gemini-3.7-flash","trai-4-zynr","trai-5-epic","trai-5-super-lightweight","qwen-qwen3.8-27b","forge-1","claude-opus-5-5","claude-opus-4","deepseek-v4.1-flash","llama-90b-vision","llama-3.2-11b-vision-instruct","claude-sonnet-5-5","claude-haiku-5-5"];
+  "gemini-3.7-flash","trai-4-zynr","trai-5-epic","trai-5-super-lightweight","qwen-qwen3.8-27b","forge-1","claude-opus-5-5","claude-opus-4","claude-sonnet-5-5","claude-haiku-5-5","qwen-3.8-max","deepseek-v4.1-flash","gemma-4-31b-it","gemini-3.8-flash"];
 
 
 function $(id){ return document.getElementById(id); }
@@ -968,10 +1032,68 @@ function unlockPlayground(){
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){
       if(d && d.data && d.data.length) fill($("pg-model"), d.data.map(function(m){ return m.id; }));
+      addFiModels();
     }).catch(function(){});
 
   refreshFreeTier();
+  refreshFrominsidge();
 }
+
+// ---- Project Frominsidge -------------------------------------------------
+var FI_MODELS = [];
+function addFiModels(){
+  var sel = $("pg-model");
+  FI_MODELS.forEach(function(id){
+    if([].some.call(sel.options, function(o){ return o.value === id; })) return;
+    var o = document.createElement("option");
+    o.value = id; o.textContent = id + "  \u2014 Frominsidge";
+    sel.appendChild(o);
+  });
+}
+function fiShow(status, note){
+  var el = $("fistate"); el.style.display = "block";
+  if(status === "active"){
+    el.innerHTML = "<b class=\"on\">Active</b> \u2014 your key can use the Frominsidge models.";
+    $("fiform").style.display = "none";
+  } else if(status === "inactive"){
+    el.innerHTML = "<b class=\"wait\">Inactive</b> \u2014 you're enrolled. Access opens once you're approved.";
+    $("fiform").style.display = "none";
+  } else {
+    el.textContent = note || "You're not enrolled yet.";
+    $("fiform").style.display = "block";
+  }
+}
+
+function refreshFrominsidge(){
+  $("filock").style.display = "none";
+  fetch(API + "/v1/frominsidge/status", { headers: auth() })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if(!d){ fiShow("not_enrolled", "Couldn't check your status. You can still enroll."); return; }
+      fiShow(d.status);
+      if(d.access && d.models){ FI_MODELS = d.models; addFiModels(); }
+    }).catch(function(){ fiShow("not_enrolled", "Couldn't reach the API to check your status."); });
+}
+
+$("fi-enroll").onclick = async function(){
+  var reason = $("fi-reason").value.trim();
+  if(reason.length < 10){ fiShow("not_enrolled", "Give a reason of at least 10 characters."); return; }
+  var b = this; b.disabled = true; b.textContent = "...";
+  try {
+    var r = await fetch(API + "/v1/frominsidge/enroll", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, auth()),
+      body: JSON.stringify({ reason: reason })
+    });
+    var d = await r.json();
+    if(r.ok) fiShow(d.status || "inactive");
+    else fiShow("not_enrolled", d.error || "Enrollment failed.");
+  } catch(err){
+    fiShow("not_enrolled", "Can't reach the API.");
+  } finally {
+    b.disabled = false; b.textContent = "Enroll";
+  }
+};
 
 function refreshFreeTier(){
   fetch(API + "/v1/video/models", { headers: auth() })
