@@ -405,6 +405,20 @@ curl https://api-forgegrit.serveousercontent.com/v1/frominsidge/models \
   </div>
 </section>
 
+<section id="beta">
+  <h2>Beta program</h2>
+  <p>The beta is for members of <b>Project Frominsidge</b>. If you&rsquo;re approved there, you&rsquo;re in the beta, with no separate sign-up.</p>
+  <table>
+    <tbody>
+      <tr><td><b>Beta models</b></td><td>None yet</td></tr>
+      <tr><td><b>Beta benefits</b></td><td>Beta features, and &infin; image generation (no daily image limit)</td></tr>
+      <tr><td><b>Beta features</b></td><td>200,000 requests per day, up from 100,000</td></tr>
+      <tr><td><b>Bonus usage credits</b></td><td>Granted by the owner. 1 credit = 1 request, spent once you reach your daily limit</td></tr>
+    </tbody>
+  </table>
+  <p>Check your own limit and credits with <code>GET /v1/usage</code>. Frominsidge status, including beta, is at <code>GET /v1/frominsidge/status</code>.</p>
+</section>
+
 <section>
   <h2>Quickstart</h2>
   <p>Base URL:</p>
@@ -892,6 +906,21 @@ var FALLBACK_MODELS = ["gpt-6-astra","claude-fable-5-1","claude-opus-5",
 
 
 function $(id){ return document.getElementById(id); }
+
+// Every call the site makes gives up after 30 seconds. The timer covers the
+// wait for the response headers; the server sends headers only when the reply
+// is ready, so this bounds the whole wait for a non-streamed answer.
+var SITE_TIMEOUT_MS = 30000;
+function fetchT(url, opts){
+  var ctl = new AbortController();
+  var timer = setTimeout(function(){ ctl.abort(); }, SITE_TIMEOUT_MS);
+  var o = Object.assign({}, opts || {}, { signal: ctl.signal });
+  return fetch(url, o).then(function(r){ clearTimeout(timer); return r; }, function(err){
+    clearTimeout(timer);
+    if(err && err.name === "AbortError") throw new Error("the request timed out after 30 seconds");
+    throw err;
+  });
+}
 var email = $("email"), pass = $("password"), msg = $("msg");
 var loginBtn = $("login"), regBtn = $("register");
 var keybox = $("keybox"), keyval = $("keyval"), form = $("form");
@@ -908,7 +937,7 @@ async function call(path){
   var c = codeInput.value.trim();
   if(c) body.code = c;
 
-  var r = await fetch(API + path, {
+  var r = await fetchT(API + path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
@@ -1023,7 +1052,7 @@ function unlockPlayground(){
   $("pg").style.display = "block";
 
   fill($("pg-model"), FALLBACK_MODELS);
-  fetch(API + "/v1/models", { headers: auth() })
+  fetchT(API + "/v1/models", { headers: auth() })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){
       if(d && d.data && d.data.length) fill($("pg-model"), d.data.map(function(m){ return m.id; }));
@@ -1061,7 +1090,7 @@ function fiShow(status, note){
 
 function refreshFrominsidge(){
   $("filock").style.display = "none";
-  fetch(API + "/v1/frominsidge/status", { headers: auth() })
+  fetchT(API + "/v1/frominsidge/status", { headers: auth() })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){
       if(!d){ fiShow("not_enrolled", "Couldn't check your status. You can still enroll."); return; }
@@ -1075,7 +1104,7 @@ $("fi-enroll").onclick = async function(){
   if(reason.length < 10){ fiShow("not_enrolled", "Give a reason of at least 10 characters."); return; }
   var b = this; b.disabled = true; b.textContent = "...";
   try {
-    var r = await fetch(API + "/v1/frominsidge/enroll", {
+    var r = await fetchT(API + "/v1/frominsidge/enroll", {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, auth()),
       body: JSON.stringify({ reason: reason })
@@ -1091,7 +1120,7 @@ $("fi-enroll").onclick = async function(){
 };
 
 function refreshQuota(){
-  fetch(API + "/v1/images/models", { headers: auth() })
+  fetchT(API + "/v1/images/models", { headers: auth() })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){
       if(!d || !d.data) return;
@@ -1137,12 +1166,12 @@ $("pg-send").onclick = async function(){
       headers: Object.assign({ "Content-Type": "application/json" }, auth()),
       body: JSON.stringify({ model: model, messages: msgs })
     };
-    var r = await fetch(API + "/v1/chat/completions", req);
+    var r = await fetchT(API + "/v1/chat/completions", req);
     // Serveo occasionally returns an empty 502 for a moment; one retry clears it.
     if(r.status === 502 && r.headers.get("content-length") === "0"){
       out(o, "").innerHTML = '<span class="spin"></span>Tunnel hiccup, retrying\u2026';
       await new Promise(function(res){ setTimeout(res, 1500); });
-      r = await fetch(API + "/v1/chat/completions", req);
+      r = await fetchT(API + "/v1/chat/completions", req);
     }
     var ms = Date.now() - t0, raw = await r.text(), d;
     try { d = JSON.parse(raw); }
@@ -1194,7 +1223,7 @@ $("im-send").onclick = async function(){
 
   var t0 = Date.now();
   try {
-    var r = await fetch(API + "/v1/images/generations", {
+    var r = await fetchT(API + "/v1/images/generations", {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, auth()),
       body: JSON.stringify({ model: model, prompt: prompt, size: $("im-size").value })
@@ -1214,7 +1243,7 @@ $("im-send").onclick = async function(){
     imTimer = setInterval(async function(){
       var secs = Math.round((Date.now() - t0) / 1000);
       try {
-        var pr = await fetch(API + "/v1/images/jobs/" + job, { headers: auth() });
+        var pr = await fetchT(API + "/v1/images/jobs/" + job, { headers: auth() });
         var pd = await pr.json();
 
         if(pd.status === "done"){
@@ -1291,7 +1320,7 @@ $("rotyes").onclick = async function(){
     var rc = $("rotcode").value.trim();
     if(rc) body.code = rc;
 
-    var r = await fetch(API + "/authenticate/rotate", {
+    var r = await fetchT(API + "/authenticate/rotate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -1325,7 +1354,7 @@ $("rotyes").onclick = async function(){
 };
 
 
-fetch(API + "/health").then(function(r){ return r.json(); }).then(function(d){
+fetchT(API + "/health").then(function(r){ return r.json(); }).then(function(d){
   var b = document.querySelector(".badge.on");
   if(d.inference !== "ok"){
     b.textContent = "Degraded";
