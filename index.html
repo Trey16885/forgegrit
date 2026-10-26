@@ -378,9 +378,7 @@ footer{padding:40px 0 60px;text-align:center;color:#555;font-size:12px}
       <thead><tr><th>Model ID</th><th>Family</th></tr></thead>
       <tbody>
         <tr><td><code>claude-mythos-5-1</code></td><td>Claude Mythos 5.1</td></tr>
-        <tr><td><code>gemini-4-argon</code></td><td>Gemini 4 Argon</td></tr>
         <tr><td><code>forge-2</code></td><td>Forge 2</td></tr>
-        <tr><td><code>qwen-3.8-27b-cyber</code></td><td>Qwen 3.8 27B Abliterated Cyber</td></tr>
       </tbody>
     </table>
 
@@ -407,11 +405,44 @@ curl https://api-forgegrit.serveousercontent.com/v1/frominsidge/models \
 </section>
 
 <section id="beta">
+  <h2>Project Gamer</h2>
+  <p>Describe a game and get a small 3D world you can explore for <b>60 seconds</b>. Anyone can use it, no key needed. Each address waits 20 seconds between games.</p>
+  <div class="card">
+    <input type="text" id="gameprompt" maxlength="500" placeholder="a maze of floating islands at sunset">
+    <button class="primary" id="gamego">Make a game</button>
+    <p id="gamestatus" class="muted"></p>
+    <iframe id="gamebox" sandbox="allow-scripts" title="Generated game" style="width:100%;height:420px;border:0;border-radius:12px;display:none"></iframe>
+  </div>
+
+  <h2>Mail, storage, and Agent keys</h2>
+  <p>These are for members of <b>Project Frominsidge</b>.</p>
+  <table>
+    <thead><tr><th>What</th><th>CLI</th></tr></thead>
+    <tbody>
+      <tr><td>Your ForgeMail ID</td><td><code>forgegrit mail me</code></td></tr>
+      <tr><td>Find someone's ID by email</td><td><code>forgegrit mail lookup &lt;email&gt;</code></td></tr>
+      <tr><td>Send mail (or <code>support</code>)</td><td><code>forgegrit mail send &lt;id&gt; "subject" body</code></td></tr>
+      <tr><td>Read your inbox (kept 10 days)</td><td><code>forgegrit mail inbox</code></td></tr>
+      <tr><td>Make an Agent key (25 max)</td><td><code>forgegrit agent-key new</code></td></tr>
+      <tr><td>ForgeStorage (20 MB of writes per day)</td><td><code>forgegrit storage put|get|ls|rm</code>, with an Agent key</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Project Comet</h2>
+  <p>Comet is for members of <b>Project Frominsidge</b>. Anyone else who tries it is told to enroll in Project Frominsidge first.</p>
+  <table>
+    <thead><tr><th>Model ID</th><th>Family</th></tr></thead>
+    <tbody>
+      <tr><td><code>trai-6-super-lightweight</code></td><td>TrAI 6 Super Lightweight</td></tr>
+      <tr><td><code>trai-6-rick</code></td><td>TrAI 6 Rick</td></tr>
+    </tbody>
+  </table>
+
   <h2>Beta program</h2>
   <p>The beta is for members of <b>Project Frominsidge</b>. If you&rsquo;re approved there, you&rsquo;re in the beta, with no separate sign-up.</p>
   <table>
     <tbody>
-      <tr><td><b>Beta models</b></td><td><code>atria-dawn-preview</code> &mdash; Atria Dawn Preview</td></tr>
+      <tr><td><b>Beta models</b></td><td>None yet</td></tr>
       <tr><td><b>Beta benefits</b></td><td>Beta features, and &infin; image generation (no daily image limit)</td></tr>
       <tr><td><b>Beta features</b></td><td>200,000 requests per day, up from 100,000</td></tr>
       <tr><td><b>Bonus usage credits</b></td><td>Granted by the owner. 1 credit = 1 request, spent once you reach your daily limit</td></tr>
@@ -551,7 +582,7 @@ forgegrit logout                     <span class="c-com"># forget the saved key<
       <tr><td><code>gemini-3.7-flash</code></td><td>Gemini 3.7 Flash</td></tr>
       <tr><td><code>minimax-m3</code></td><td>MiniMax M3</td></tr>
       <tr><td><code>minimax-m2.5</code></td><td>MiniMax M2.5</td></tr>
-      <tr><td><code>minimax-m3.1</code></td><td>MiniMax M3.1</td></tr>
+      <tr><td><code>gemini-4-argon</code></td><td>Gemini 4 Argon</td></tr>
       <tr><td><code>gemini-1.5-pro</code></td><td>Gemini 1.5 Pro</td></tr>
       <tr><td><code>gemini-1.5-flash</code></td><td>Gemini 1.5 Flash</td></tr>
       <tr><td><code>gemini-1.5-flash-lite</code></td><td>Gemini 1.5 Flash Lite</td></tr>
@@ -903,7 +934,7 @@ var SESSION = { key: null, email: null, password: null, twofa: false };
 var FALLBACK_MODELS = ["gpt-6-astra","claude-fable-5-1","claude-opus-5",
   "claude-sonnet-5","claude-opus-4-8","claude-fable-5","gpt-5.6-sol","gpt-5.6-terra",
   "gpt-5.6-luna","moonshotai-kimi-k3","z-ai-glm-5.3","xai-grok-4.5","gemini-3.1-pro",
-  "gemini-3.7-flash","trai-4-zynr","trai-5-epic","trai-5-super-lightweight","qwen-qwen3.8-27b","forge-1","claude-opus-5-5","claude-opus-4","claude-sonnet-5-5","claude-haiku-5-5","qwen-3.8-max","deepseek-v4.1-flash","gemma-4-31b-it","gemini-3.8-flash","gemini-1.5-pro","gemini-1.5-flash","gemini-1.5-flash-lite","minimax-m3","minimax-m2.5","gpt-5.3","gpt-6.1-sol","minimax-m3.1",
+  "gemini-3.7-flash","trai-4-zynr","trai-5-epic","trai-5-super-lightweight","qwen-qwen3.8-27b","forge-1","claude-opus-5-5","claude-opus-4","claude-sonnet-5-5","claude-haiku-5-5","qwen-3.8-max","deepseek-v4.1-flash","gemma-4-31b-it","gemini-3.8-flash","gemini-1.5-pro","gemini-1.5-flash","gemini-1.5-flash-lite","minimax-m3","minimax-m2.5","gpt-5.3","gpt-6.1-sol","gemini-4-argon",
   "agnes-3.0-flash","agnes-2.5-flash","agnes-2.0-flash"];
 
 
@@ -1365,6 +1396,31 @@ fetchT(API + "/health").then(function(r){ return r.json(); }).then(function(d){
     b.style.background = "rgba(248,113,113,.07)";
   }
 }).catch(function(){});
+
+// ---- Project Gamer
+(function(){
+  var btn = document.getElementById("gamego");
+  if(!btn) return;
+  var box = document.getElementById("gamebox"), status = document.getElementById("gamestatus");
+  btn.addEventListener("click", async function(){
+    var prompt = document.getElementById("gameprompt").value.trim();
+    if(!prompt){ status.textContent = "Describe the game first."; return; }
+    btn.disabled = true; status.textContent = "Building your game (this can take a minute)...";
+    box.style.display = "none";
+    try{
+      var r = await fetchT(API + "/v1/game", {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({prompt: prompt})
+      });
+      var d = await r.json();
+      if(!r.ok){ status.textContent = d.error || ("Error " + r.status); return; }
+      box.srcdoc = d.html; box.style.display = "block";
+      status.textContent = "Explore for " + d.seconds + " seconds.";
+    }catch(e){
+      status.textContent = e.message || "Couldn't reach the server.";
+    }finally{ btn.disabled = false; }
+  });
+})();
 </script>
 </body>
 </html>
