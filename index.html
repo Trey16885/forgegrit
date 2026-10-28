@@ -58,6 +58,15 @@ button{
 .ghost{background:var(--bg);color:var(--text);border:1px solid var(--line)}
 .ghost:hover{border-color:var(--orange)}
 button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.tool{margin-top:22px}
+.tool h3{margin:0 0 6px}
+.tool input,.tool textarea{width:100%;margin:6px 0;box-sizing:border-box}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.row input{flex:1;min-width:180px;margin:0}
+.out{margin:12px 0;font-size:13px;line-height:1.5;word-break:break-all}
+.out .mono{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:6px 0}
+.out .mail{border-top:1px solid var(--line);padding:10px 0;white-space:pre-wrap}
+.out .mail b{color:var(--orange)}
 .msg{margin-top:16px;padding:12px 14px;border-radius:8px;font-size:13px;display:none}
 .msg.err{background:rgba(248,113,113,.08);color:var(--red);border:1px solid rgba(248,113,113,.25)}
 .msg.ok{background:rgba(74,222,128,.08);color:var(--green);border:1px solid rgba(74,222,128,.25)}
@@ -404,7 +413,7 @@ curl https://api-forgegrit.serveousercontent.com/v1/frominsidge/models \
   </div>
 </section>
 
-<section id="beta">
+<section id="gamer">
   <h2>Project Gamer</h2>
   <p>Describe a game and get a small 3D world you can explore for <b>60 seconds</b>. Anyone can use it, no key needed. Each address waits 20 seconds between games.</p>
   <div class="card">
@@ -414,20 +423,64 @@ curl https://api-forgegrit.serveousercontent.com/v1/frominsidge/models \
     <iframe id="gamebox" sandbox="allow-scripts" title="Generated game" style="width:100%;height:420px;border:0;border-radius:12px;display:none"></iframe>
   </div>
 
-  <h2>Mail, storage, and Agent keys</h2>
-  <p>These are for members of <b>Project Frominsidge</b>.</p>
-  <table>
-    <thead><tr><th>What</th><th>CLI</th></tr></thead>
-    <tbody>
-      <tr><td>Your ForgeMail ID</td><td><code>forgegrit mail me</code></td></tr>
-      <tr><td>Find someone's ID by email</td><td><code>forgegrit mail lookup &lt;email&gt;</code></td></tr>
-      <tr><td>Send mail (or <code>support</code>)</td><td><code>forgegrit mail send &lt;id&gt; "subject" body</code></td></tr>
-      <tr><td>Read your inbox (kept 10 days)</td><td><code>forgegrit mail inbox</code></td></tr>
-      <tr><td>Make an Agent key (25 max)</td><td><code>forgegrit agent-key new</code></td></tr>
-      <tr><td>ForgeStorage (20 MB of writes per day)</td><td><code>forgegrit storage put|get|ls|rm</code>, with an Agent key</td></tr>
-    </tbody>
-  </table>
+</section>
 
+<section id="tools">
+  <h2>Mail, storage, and Agent keys</h2>
+  <p>These are for members of <b>Project Frominsidge</b>. Log in above first.</p>
+
+  <div class="card tool" id="t-keys">
+    <h3>Agent keys</h3>
+    <p class="muted">Agent keys (<code>fgag_</code>) are the only keys ForgeStorage accepts. You can have 25. A new key is shown once.</p>
+    <div class="row">
+      <button class="primary" id="ak-new">New Agent key</button>
+      <button class="ghost" id="ak-list">Show my keys</button>
+    </div>
+    <div class="out" id="ak-out"></div>
+    <div class="row">
+      <input type="text" id="ak-revoke" placeholder="fgag_&hellip; (the full key, to revoke it)" autocomplete="off">
+      <button class="danger" id="ak-rm">Revoke</button>
+    </div>
+    <div class="msg" id="ak-msg"></div>
+  </div>
+
+  <div class="card tool" id="t-mail">
+    <h3>ForgeMail</h3>
+    <p class="muted">Your Email ID is a SHA-512 hash of your email. Mail is kept 10 days, then deleted. Type <code>support</code> as the ID to write to support.</p>
+    <div class="row">
+      <button class="ghost" id="ml-me">My Email ID</button>
+      <button class="ghost" id="ml-inbox">Refresh inbox</button>
+    </div>
+    <div class="row">
+      <input type="email" id="ml-lookup-in" placeholder="Find someone's ID by their email" autocomplete="off">
+      <button class="ghost" id="ml-lookup">Look up</button>
+    </div>
+    <input type="text" id="ml-to" placeholder="To: an Email ID, or support" autocomplete="off">
+    <input type="text" id="ml-subject" maxlength="200" placeholder="Subject">
+    <textarea id="ml-body" maxlength="5000" placeholder="Message"></textarea>
+    <div class="row"><button class="primary" id="ml-send">Send</button></div>
+    <div class="out" id="ml-out"></div>
+    <div class="msg" id="ml-msg"></div>
+  </div>
+
+  <div class="card tool" id="t-store">
+    <h3>ForgeStorage</h3>
+    <p class="muted">Up to 20 MB written per day, 1 MB per item. Needs an Agent key. The key stays in this page and is never saved.</p>
+    <input type="password" id="st-agent" placeholder="Agent key (fgag_&hellip;)" autocomplete="off">
+    <input type="text" id="st-key" maxlength="128" placeholder="Item name, like notes/today" autocomplete="off">
+    <textarea id="st-value" placeholder="Value to save"></textarea>
+    <div class="row">
+      <button class="primary" id="st-put">Save</button>
+      <button class="ghost" id="st-get">Load</button>
+      <button class="ghost" id="st-list">List all</button>
+      <button class="danger" id="st-del">Delete</button>
+    </div>
+    <div class="out" id="st-out"></div>
+    <div class="msg" id="st-msg"></div>
+  </div>
+</section>
+
+<section id="comet">
   <h2>Project Comet</h2>
   <p>Comet is for members of <b>Project Frominsidge</b>. Anyone else who tries it is told to enroll in Project Frominsidge first.</p>
   <table>
@@ -437,7 +490,9 @@ curl https://api-forgegrit.serveousercontent.com/v1/frominsidge/models \
       <tr><td><code>trai-6-rick</code></td><td>TrAI 6 Rick</td></tr>
     </tbody>
   </table>
+</section>
 
+<section id="beta">
   <h2>Beta program</h2>
   <p>The beta is for members of <b>Project Frominsidge</b>. If you&rsquo;re approved there, you&rsquo;re in the beta, with no separate sign-up.</p>
   <table>
@@ -1419,6 +1474,138 @@ fetchT(API + "/health").then(function(r){ return r.json(); }).then(function(d){
     }catch(e){
       status.textContent = e.message || "Couldn't reach the server.";
     }finally{ btn.disabled = false; }
+  });
+})();
+
+// ---- Mail, storage, Agent keys
+(function(){
+  if(!$("ak-new")) return;
+  function note(id, text, ok){ var m = $(id); m.textContent = text; m.className = "msg " + (ok ? "ok" : "err"); m.style.display = "block"; }
+  function needLogin(id){ if(SESSION.key) return false; note(id, "Log in first.", false); return true; }
+  async function api(method, path, body, key){
+    var h = { "Authorization": "Bearer " + key };
+    var o = { method: method, headers: h };
+    if(body !== undefined){ h["Content-Type"] = "application/json"; o.body = JSON.stringify(body); }
+    var r = await fetchT(API + path, o);
+    var d = {}; try { d = await r.json(); } catch(e){}
+    return { ok: r.ok, status: r.status, data: d };
+  }
+  function fail(id, res){ note(id, (res.data && res.data.error) || ("Error " + res.status), false); }
+  function copy(text, btn){ try { navigator.clipboard.writeText(text); if(btn) btn.textContent = "Copied"; } catch(e){} }
+  function add(parent, text, cls){ var d = document.createElement("div"); d.textContent = text; if(cls) d.className = cls; parent.appendChild(d); return d; }
+  function clear(id){ $(id).textContent = ""; $(id).style.display = "block"; return $(id); }
+  function path(k){ return k.split("/").map(encodeURIComponent).join("/"); }
+  function guard(id, fn){
+    return async function(){
+      if(needLogin(id)) return;
+      var b = this; b.disabled = true;
+      try { await fn(); } catch(e){ note(id, e.message || "Couldn't reach the API.", false); }
+      finally { b.disabled = false; }
+    };
+  }
+
+  // Agent keys
+  $("ak-new").onclick = guard("ak-msg", async function(){
+    var res = await api("POST", "/v1/agent-keys", undefined, SESSION.key);
+    if(!res.ok) return fail("ak-msg", res);
+    var out = clear("ak-out");
+    add(out, "New Agent key. It is shown once, so save it now:");
+    add(out, res.data.api_key, "mono");
+    var b = document.createElement("button"); b.className = "ghost"; b.textContent = "Copy";
+    b.onclick = function(){ copy(res.data.api_key, b); }; out.appendChild(b);
+    note("ak-msg", "Agent key created.", true);
+  });
+  $("ak-list").onclick = guard("ak-msg", async function(){
+    var res = await api("GET", "/v1/agent-keys", undefined, SESSION.key);
+    if(!res.ok) return fail("ak-msg", res);
+    var out = clear("ak-out"), list = res.data.data || [];
+    if(!list.length) add(out, "No Agent keys yet.");
+    list.forEach(function(k){ add(out, k.hint + "   created " + (k.created || "?"), "mono"); });
+    note("ak-msg", list.length + " of " + (res.data.limit || 25) + " Agent keys used.", true);
+  });
+  $("ak-rm").onclick = guard("ak-msg", async function(){
+    var k = $("ak-revoke").value.trim();
+    if(!k){ return note("ak-msg", "Paste the full Agent key to revoke.", false); }
+    var res = await api("DELETE", "/v1/agent-keys", { key: k }, SESSION.key);
+    if(!res.ok) return fail("ak-msg", res);
+    $("ak-revoke").value = "";
+    note("ak-msg", "Revoked.", true);
+  });
+
+  // ForgeMail
+  $("ml-me").onclick = guard("ml-msg", async function(){
+    var res = await api("GET", "/v1/mail/me", undefined, SESSION.key);
+    if(!res.ok) return fail("ml-msg", res);
+    var out = clear("ml-out");
+    add(out, "Your Email ID:"); add(out, res.data.email_id, "mono");
+    var b = document.createElement("button"); b.className = "ghost"; b.textContent = "Copy";
+    b.onclick = function(){ copy(res.data.email_id, b); }; out.appendChild(b);
+    note("ml-msg", "Share this ID so people can write to you.", true);
+  });
+  $("ml-lookup").onclick = guard("ml-msg", async function(){
+    var e = $("ml-lookup-in").value.trim();
+    if(!e){ return note("ml-msg", "Type an email to look up.", false); }
+    var res = await api("GET", "/v1/mail/lookup?email=" + encodeURIComponent(e), undefined, SESSION.key);
+    if(!res.ok) return fail("ml-msg", res);
+    var out = clear("ml-out");
+    add(out, "Email ID:"); add(out, res.data.email_id, "mono");
+    $("ml-to").value = res.data.email_id;
+    note("ml-msg", "Filled in as the recipient below.", true);
+  });
+  $("ml-send").onclick = guard("ml-msg", async function(){
+    var res = await api("POST", "/v1/mail/send", {
+      to: $("ml-to").value.trim(), subject: $("ml-subject").value.trim(), body: $("ml-body").value.trim()
+    }, SESSION.key);
+    if(!res.ok) return fail("ml-msg", res);
+    $("ml-subject").value = ""; $("ml-body").value = "";
+    note("ml-msg", "Sent.", true);
+  });
+  $("ml-inbox").onclick = guard("ml-msg", async function(){
+    var res = await api("GET", "/v1/mail/inbox", undefined, SESSION.key);
+    if(!res.ok) return fail("ml-msg", res);
+    var out = clear("ml-out"), list = res.data.data || [];
+    if(!list.length) add(out, "Inbox is empty. Mail is kept for 10 days.");
+    list.forEach(function(m){
+      var box = document.createElement("div"); box.className = "mail";
+      var h = document.createElement("b"); h.textContent = m.subject; box.appendChild(h);
+      add(box, "from " + String(m.from).slice(0, 16) + "…   " + m.sent);
+      add(box, m.body);
+      out.appendChild(box);
+    });
+    note("ml-msg", list.length + " message(s).", true);
+  });
+
+  // ForgeStorage
+  function agentKey(){ var k = $("st-agent").value.trim(); if(!k){ note("st-msg", "Paste an Agent key first.", false); return null; } return k; }
+  function itemName(){ var k = $("st-key").value.trim(); if(!k){ note("st-msg", "Type an item name.", false); return null; } return k; }
+  $("st-put").onclick = guard("st-msg", async function(){
+    var a = agentKey(), k = a && itemName(); if(!a || !k) return;
+    var res = await api("PUT", "/v1/storage/" + path(k), { value: $("st-value").value }, a);
+    if(!res.ok) return fail("st-msg", res);
+    note("st-msg", "Saved " + k + " (" + res.data.size_bytes + " bytes).", true);
+  });
+  $("st-get").onclick = guard("st-msg", async function(){
+    var a = agentKey(), k = a && itemName(); if(!a || !k) return;
+    var res = await api("GET", "/v1/storage/" + path(k), undefined, a);
+    if(!res.ok) return fail("st-msg", res);
+    $("st-value").value = res.data.value;
+    note("st-msg", "Loaded " + k + " into the box above.", true);
+  });
+  $("st-list").onclick = guard("st-msg", async function(){
+    var a = agentKey(); if(!a) return;
+    var res = await api("GET", "/v1/storage", undefined, a);
+    if(!res.ok) return fail("st-msg", res);
+    var out = clear("st-out"), list = res.data.data || [];
+    if(!list.length) add(out, "Nothing stored yet.");
+    list.forEach(function(i){ add(out, i.key + "   " + i.size_bytes + " bytes", "mono"); });
+    var used = (res.data.bytes_written_today || 0) / (1024 * 1024);
+    note("st-msg", used.toFixed(2) + " of 20 MB written today.", true);
+  });
+  $("st-del").onclick = guard("st-msg", async function(){
+    var a = agentKey(), k = a && itemName(); if(!a || !k) return;
+    var res = await api("DELETE", "/v1/storage/" + path(k), undefined, a);
+    if(!res.ok) return fail("st-msg", res);
+    note("st-msg", "Deleted " + k + ".", true);
   });
 })();
 </script>
